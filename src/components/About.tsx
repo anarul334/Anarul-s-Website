@@ -116,7 +116,7 @@ export const About: React.FC = () => {
               {/* Pharmacy Image */}
               <div className="relative rounded-xl overflow-hidden border border-slate-200 dark:border-slate-700 aspect-video bg-slate-200 dark:bg-slate-800">
                 <img
-                  src="/src/assets/images/rifat_pharmacy_1792911355260.jpg"
+                  src="/images/rifat_pharmacy_1792911355260.jpg"
                   alt="Rifat Pharmacy Chhoygharia Bazar Satkhira"
                   referrerPolicy="no-referrer"
                   className="w-full h-full object-cover hover:scale-102 transition-transform duration-300"

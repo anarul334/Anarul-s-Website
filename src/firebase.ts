@@ -14,10 +14,16 @@ export const auth = getAuth(app);
 export const googleProvider = new GoogleAuthProvider();
 googleProvider.setCustomParameters({ prompt: 'select_account' });
 
-// Testing connection per Skill instructions
+// Testing connection per Skill instructions with safety timeout
 export async function testConnection(): Promise<boolean> {
   try {
-    await getDocFromServer(doc(db, 'test', 'connection'));
+    const timeout = new Promise<never>((_, reject) =>
+      setTimeout(() => reject(new Error('Connection check timeout')), 2500)
+    );
+    await Promise.race([
+      getDocFromServer(doc(db, 'test', 'connection')),
+      timeout,
+    ]);
     return true;
   } catch (error) {
     if (error instanceof Error && error.message.includes('the client is offline')) {
@@ -26,7 +32,15 @@ export async function testConnection(): Promise<boolean> {
     return false;
   }
 }
-testConnection();
+
+// Run test asynchronously after load event without blocking page load
+if (typeof window !== 'undefined') {
+  window.addEventListener('load', () => {
+    setTimeout(() => {
+      testConnection().catch(() => {});
+    }, 1500);
+  });
+}
 
 // Standard Error Handler per Firebase Integration Skill
 export enum OperationType {

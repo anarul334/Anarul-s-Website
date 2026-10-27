@@ -51,7 +51,7 @@ export const CertificatesGallery: React.FC = () => {
                     referrerPolicy="no-referrer"
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     onError={(e) => {
-                      (e.currentTarget as HTMLImageElement).src = '/src/assets/images/minor_procedures_care_1792911356505.jpg';
+                      (e.currentTarget as HTMLImageElement).src = '/images/minor_procedures_care_1792911356505.jpg';
                     }}
                   />
                 ) : (
@@ -121,7 +121,7 @@ export const CertificatesGallery: React.FC = () => {
             {/* Preview image */}
             <div className="relative aspect-16/10 w-full bg-slate-900 overflow-hidden">
               <img
-                src={selectedCert.imageUrl || '/src/assets/images/minor_procedures_care_1792911356505.jpg'}
+                src={selectedCert.imageUrl || '/images/minor_procedures_care_1792911356505.jpg'}
                 alt={selectedCert.title[language]}
                 referrerPolicy="no-referrer"
                 className="w-full h-full object-contain"

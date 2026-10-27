@@ -102,7 +102,7 @@ export const CvModal: React.FC<CvModalProps> = ({ onClose }) => {
                 alt="Md. Anoarul Islam"
                 className="w-full h-full object-cover object-top"
                 onError={(e) => {
-                  (e.currentTarget as HTMLImageElement).src = '/src/assets/images/dr_anoarul_dma.png';
+                  (e.currentTarget as HTMLImageElement).src = '/images/dr_anoarul_dma.png';
                 }}
               />
             </div>

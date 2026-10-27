@@ -175,7 +175,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onClose }) => {
       issuer: { en: newCertIssuer.trim() || 'Certified Institution', bn: newCertIssuer.trim() || 'অনুমোদিত প্রতিষ্ঠান' },
       year: newCertYear.trim() || '2026',
       grade: newCertGrade.trim() || undefined,
-      imageUrl: newCertUrl.trim() || '/src/assets/images/minor_procedures_care_1792911356505.jpg',
+      imageUrl: newCertUrl.trim() || '/images/minor_procedures_care_1792911356505.jpg',
       verificationId: `CERT-${Date.now().toString().slice(-4)}`,
     });
     setNewCertTitle('');
@@ -910,7 +910,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onClose }) => {
                           type="text"
                           value={newCertUrl}
                           onChange={(e) => setNewCertUrl(e.target.value)}
-                          placeholder="/src/assets/images/... or https://"
+                          placeholder="/images/... or https://"
                           className="w-full px-3 py-2 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs"
                         />
                       </div>

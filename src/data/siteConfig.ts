@@ -496,7 +496,7 @@ export const initialCertificates: CertificateItem[] = [
     year: '2021',
     grade: 'Grade A',
     verificationId: 'BTF-DMA-2021-0492',
-    imageUrl: '/src/assets/images/minor_procedures_care_1792911356505.jpg',
+    imageUrl: '/images/minor_procedures_care_1792911356505.jpg',
   },
   {
     id: 'cert-2',
@@ -511,7 +511,7 @@ export const initialCertificates: CertificateItem[] = [
     year: '2020',
     grade: 'Government Certified',
     verificationId: 'DGHS-SAT-VD-2020',
-    imageUrl: '/src/assets/images/community_health_satkhira_1792911356288.jpg',
+    imageUrl: '/images/community_health_satkhira_1792911356288.jpg',
   },
   {
     id: 'cert-3',
@@ -526,7 +526,7 @@ export const initialCertificates: CertificateItem[] = [
     year: '2020',
     grade: 'Reg. C-99360',
     verificationId: 'PCB-REG-C99360',
-    imageUrl: '/src/assets/images/rifat_pharmacy_1792911355260.jpg',
+    imageUrl: '/images/rifat_pharmacy_1792911355260.jpg',
   },
   {
     id: 'cert-4',
@@ -541,7 +541,7 @@ export const initialCertificates: CertificateItem[] = [
     year: '2026',
     grade: 'Certified Clinical Skills',
     verificationId: 'AHS-MP-2026-881',
-    imageUrl: '/src/assets/images/minor_procedures_care_1792911356505.jpg',
+    imageUrl: '/images/minor_procedures_care_1792911356505.jpg',
   },
   {
     id: 'cert-5',
@@ -556,7 +556,7 @@ export const initialCertificates: CertificateItem[] = [
     year: '2025',
     grade: 'Grade B (GPA 3.66)',
     verificationId: 'BTF-DHPM-2025-112',
-    imageUrl: '/src/assets/images/dr_anoarul_dma.png',
+    imageUrl: '/images/dr_anoarul_dma.png',
   },
   {
     id: 'cert-6',
@@ -571,7 +571,7 @@ export const initialCertificates: CertificateItem[] = [
     year: '2010',
     grade: 'Grade B',
     verificationId: 'BTF-LMAFP-2010-018',
-    imageUrl: '/src/assets/images/community_health_satkhira_1792911356288.jpg',
+    imageUrl: '/images/community_health_satkhira_1792911356288.jpg',
   },
 ];
 

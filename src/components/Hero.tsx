@@ -143,7 +143,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenCv, onOpenAssistant }) => {
                     className="w-full h-full object-cover object-top hover:scale-105 transition-transform duration-500"
                     onError={(e) => {
                       // Fallback if image path fails
-                      (e.currentTarget as HTMLImageElement).src = '/src/assets/images/dr_anoarul_dma.png';
+                      (e.currentTarget as HTMLImageElement).src = '/images/dr_anoarul_dma.png';
                     }}
                   />
                 </div>

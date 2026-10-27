@@ -120,8 +120,8 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
   // Profile photo
   const [profilePhoto, setProfilePhoto] = useState<string>(() => {
     const saved = localStorage.getItem('anoarul_profile_photo');
-    if (!saved || saved.includes('doctor_portrait')) {
-      return '/src/assets/images/dr_anoarul_dma.png';
+    if (!saved || saved.includes('/src/assets/images') || saved.includes('doctor_portrait')) {
+      return '/images/dr_anoarul_dma.png';
     }
     return saved;
   });
@@ -522,7 +522,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     setContactInfo(initialContactInfo);
     setClinicHours(initialClinicHours);
-    setProfilePhoto('/src/assets/images/dr_anoarul_dma.png');
+    setProfilePhoto('/images/dr_anoarul_dma.png');
     setCustomCvUrl(null);
     setBlogPosts(initialBlogPosts);
     setTestimonials(initialTestimonials);
