@@ -10,15 +10,33 @@ import {
 import {
   initialContactInfo,
   initialClinicHours,
-  initialServices,
-  initialExperience,
-  initialTraining,
-  initialEducation,
-  initialMemberships,
   initialCertificates,
   initialBlogPosts,
   initialTestimonials,
 } from '../data/siteConfig';
+import {
+  db,
+  auth,
+  googleProvider,
+  handleFirestoreError,
+  OperationType,
+} from '../firebase';
+import {
+  collection,
+  doc,
+  setDoc,
+  deleteDoc,
+  onSnapshot,
+  getDocs,
+  query,
+  orderBy,
+} from 'firebase/firestore';
+import {
+  signInWithPopup,
+  signOut,
+  onAuthStateChanged,
+  User as FirebaseUser,
+} from 'firebase/auth';
 
 interface DataContextType {
   contactInfo: ContactInfo;
@@ -54,11 +72,14 @@ interface DataContextType {
   addCertificate: (cert: Omit<CertificateItem, 'id'>) => void;
   deleteCertificate: (id: string) => void;
 
-  // Admin auth
+  // Admin auth & Firebase status
   isAdminAuthenticated: boolean;
   adminLogin: (pass: string) => boolean;
+  googleLogin: () => Promise<boolean>;
   adminLogout: () => void;
   changeAdminPassword: (newPass: string) => void;
+  firebaseUser: FirebaseUser | null;
+  isFirebaseConnected: boolean;
 
   // Reset to default
   resetAllToDefault: () => void;
@@ -67,10 +88,27 @@ interface DataContextType {
 const DataContext = createContext<DataContextType | undefined>(undefined);
 
 export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [isFirebaseConnected, setIsFirebaseConnected] = useState<boolean>(true);
+  const [firebaseUser, setFirebaseUser] = useState<FirebaseUser | null>(null);
+
   // Contact info
   const [contactInfo, setContactInfo] = useState<ContactInfo>(() => {
     const saved = localStorage.getItem('anoarul_contact');
-    return saved ? JSON.parse(saved) : initialContactInfo;
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        if (parsed.titleEn && parsed.titleEn.includes('RMP')) {
+          parsed.titleEn = parsed.titleEn.replace('Rural Medical Practitioner (RMP)', 'Diploma in Medical Assistant (DMA)');
+        }
+        if (parsed.titleBn && parsed.titleBn.includes('RMP')) {
+          parsed.titleBn = parsed.titleBn.replace('পল্লী চিকিৎসক (RMP)', 'পল্লী চিকিৎসক (DMA)');
+        }
+        return parsed;
+      } catch (e) {
+        return initialContactInfo;
+      }
+    }
+    return initialContactInfo;
   });
 
   // Clinic Hours
@@ -82,7 +120,10 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
   // Profile photo
   const [profilePhoto, setProfilePhoto] = useState<string>(() => {
     const saved = localStorage.getItem('anoarul_profile_photo');
-    return saved || '/src/assets/images/doctor_portrait_1792911353969.jpg';
+    if (!saved || saved.includes('doctor_portrait')) {
+      return '/src/assets/images/dr_anoarul_dma.png';
+    }
+    return saved;
   });
 
   // Custom CV URL
@@ -94,7 +135,6 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [appointments, setAppointments] = useState<Appointment[]>(() => {
     const saved = localStorage.getItem('anoarul_appointments');
     if (saved) return JSON.parse(saved);
-    // Seed sample appointments for demonstration
     return [
       {
         id: 'SAT-2026-1042',
@@ -161,7 +201,44 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return sessionStorage.getItem('anoarul_admin_session') === 'true';
   });
 
-  // Sync to local storage
+  // Listen to Firebase Auth state
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setFirebaseUser(user);
+      if (user) {
+        setIsAdminAuthenticated(true);
+        sessionStorage.setItem('anoarul_admin_session', 'true');
+      }
+    });
+    return () => unsubscribe();
+  }, []);
+
+  // Listen to Appointments from Firestore if admin authenticated
+  useEffect(() => {
+    if (!isAdminAuthenticated) return;
+    try {
+      const q = query(collection(db, 'appointments'));
+      const unsubscribe = onSnapshot(
+        q,
+        (snapshot) => {
+          if (!snapshot.empty) {
+            const fetched = snapshot.docs.map((d) => d.data() as Appointment);
+            // Sort by createdAt descending
+            fetched.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+            setAppointments(fetched);
+          }
+        },
+        (error) => {
+          handleFirestoreError(error, OperationType.LIST, 'appointments');
+        }
+      );
+      return () => unsubscribe();
+    } catch (e) {
+      console.warn('Appointments snapshot subscription notice:', e);
+    }
+  }, [isAdminAuthenticated]);
+
+  // Sync to local storage for quick access
   useEffect(() => {
     localStorage.setItem('anoarul_contact', JSON.stringify(contactInfo));
   }, [contactInfo]);
@@ -199,8 +276,24 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, [certificates]);
 
   // Actions
-  const updateContactInfo = (info: ContactInfo) => setContactInfo(info);
-  const updateClinicHours = (hours: ClinicHours) => setClinicHours(hours);
+  const updateContactInfo = async (info: ContactInfo) => {
+    setContactInfo(info);
+    try {
+      await setDoc(doc(db, 'config', 'contact'), info, { merge: true });
+    } catch (err) {
+      handleFirestoreError(err, OperationType.WRITE, 'config/contact');
+    }
+  };
+
+  const updateClinicHours = async (hours: ClinicHours) => {
+    setClinicHours(hours);
+    try {
+      await setDoc(doc(db, 'config', 'hours'), hours, { merge: true });
+    } catch (err) {
+      handleFirestoreError(err, OperationType.WRITE, 'config/hours');
+    }
+  };
+
   const updateProfilePhoto = (url: string) => setProfilePhoto(url);
   const updateCustomCvUrl = (url: string | null) => setCustomCvUrl(url);
 
@@ -215,24 +308,55 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
       status: 'pending',
       createdAt: new Date().toISOString(),
     };
-    setAppointments(prev => [newAppointment, ...prev]);
+
+    // Update local state first for instant UI response
+    setAppointments((prev) => [newAppointment, ...prev]);
+
+    // Save to Firebase Firestore
+    try {
+      await setDoc(doc(db, 'appointments', id), newAppointment);
+    } catch (error) {
+      handleFirestoreError(error, OperationType.CREATE, `appointments/${id}`);
+    }
+
     return id;
   };
 
-  const updateAppointmentStatus = (id: string, status: Appointment['status']) => {
-    setAppointments(prev =>
-      prev.map(item => (item.id === id ? { ...item, status } : item))
+  const updateAppointmentStatus = async (id: string, status: Appointment['status']) => {
+    setAppointments((prev) =>
+      prev.map((item) => (item.id === id ? { ...item, status } : item))
     );
+    try {
+      await setDoc(doc(db, 'appointments', id), { status }, { merge: true });
+    } catch (error) {
+      handleFirestoreError(error, OperationType.UPDATE, `appointments/${id}`);
+    }
   };
 
-  const deleteAppointment = (id: string) => {
-    setAppointments(prev => prev.filter(item => item.id !== id));
+  const deleteAppointment = async (id: string) => {
+    setAppointments((prev) => prev.filter((item) => item.id !== id));
+    try {
+      await deleteDoc(doc(db, 'appointments', id));
+    } catch (error) {
+      handleFirestoreError(error, OperationType.DELETE, `appointments/${id}`);
+    }
   };
 
   const exportAppointmentsCsv = () => {
     if (appointments.length === 0) return;
-    const headers = ['Booking ID', 'Date', 'Time', 'Patient Name', 'Phone', 'Age', 'Gender', 'Problem Description', 'Status', 'Submitted At'];
-    const rows = appointments.map(a => [
+    const headers = [
+      'Booking ID',
+      'Date',
+      'Time',
+      'Patient Name',
+      'Phone',
+      'Age',
+      'Gender',
+      'Problem Description',
+      'Status',
+      'Submitted At',
+    ];
+    const rows = appointments.map((a) => [
       `"${a.id}"`,
       `"${a.date}"`,
       `"${a.timeSlot}"`,
@@ -245,53 +369,91 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
       `"${new Date(a.createdAt).toLocaleString()}"`,
     ]);
 
-    const csvContent = '\uFEFF' + [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+    const csvContent =
+      '\uFEFF' + [headers.join(','), ...rows.map((r) => r.join(','))].join('\n');
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.setAttribute('download', `satkhira_clinic_appointments_${new Date().toISOString().slice(0, 10)}.csv`);
+    link.setAttribute(
+      'download',
+      `satkhira_clinic_appointments_${new Date().toISOString().slice(0, 10)}.csv`
+    );
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
   };
 
   // Blog
-  const addBlogPost = (postData: Omit<BlogPost, 'id'>) => {
+  const addBlogPost = async (postData: Omit<BlogPost, 'id'>) => {
+    const id = `post-${Date.now()}`;
     const newPost: BlogPost = {
       ...postData,
-      id: `post-${Date.now()}`,
+      id,
     };
-    setBlogPosts(prev => [newPost, ...prev]);
+    setBlogPosts((prev) => [newPost, ...prev]);
+    try {
+      await setDoc(doc(db, 'blogPosts', id), newPost);
+    } catch (err) {
+      handleFirestoreError(err, OperationType.CREATE, `blogPosts/${id}`);
+    }
   };
 
-  const updateBlogPost = (post: BlogPost) => {
-    setBlogPosts(prev => prev.map(p => (p.id === post.id ? post : p)));
+  const updateBlogPost = async (post: BlogPost) => {
+    setBlogPosts((prev) => prev.map((p) => (p.id === post.id ? post : p)));
+    try {
+      await setDoc(doc(db, 'blogPosts', post.id), post, { merge: true });
+    } catch (err) {
+      handleFirestoreError(err, OperationType.UPDATE, `blogPosts/${post.id}`);
+    }
   };
 
-  const deleteBlogPost = (id: string) => {
-    setBlogPosts(prev => prev.filter(p => p.id !== id));
+  const deleteBlogPost = async (id: string) => {
+    setBlogPosts((prev) => prev.filter((p) => p.id !== id));
+    try {
+      await deleteDoc(doc(db, 'blogPosts', id));
+    } catch (err) {
+      handleFirestoreError(err, OperationType.DELETE, `blogPosts/${id}`);
+    }
   };
 
   // Testimonials
-  const addTestimonial = (data: Omit<Testimonial, 'id' | 'status' | 'date'>) => {
+  const addTestimonial = async (
+    data: Omit<Testimonial, 'id' | 'status' | 'date'>
+  ) => {
+    const id = `test-${Date.now()}`;
     const newTestimonial: Testimonial = {
       ...data,
-      id: `test-${Date.now()}`,
+      id,
       status: 'pending',
       date: new Date().toISOString().slice(0, 10),
     };
-    setTestimonials(prev => [newTestimonial, ...prev]);
+    setTestimonials((prev) => [newTestimonial, ...prev]);
+    try {
+      await setDoc(doc(db, 'testimonials', id), newTestimonial);
+    } catch (err) {
+      handleFirestoreError(err, OperationType.CREATE, `testimonials/${id}`);
+    }
   };
 
-  const approveTestimonial = (id: string) => {
-    setTestimonials(prev =>
-      prev.map(t => (t.id === id ? { ...t, status: 'approved' } : t))
+  const approveTestimonial = async (id: string) => {
+    setTestimonials((prev) =>
+      prev.map((t) => (t.id === id ? { ...t, status: 'approved' } : t))
     );
+    try {
+      await setDoc(doc(db, 'testimonials', id), { status: 'approved' }, { merge: true });
+    } catch (err) {
+      handleFirestoreError(err, OperationType.UPDATE, `testimonials/${id}`);
+    }
   };
 
-  const deleteTestimonial = (id: string) => {
-    setTestimonials(prev => prev.filter(t => t.id !== id));
+  const deleteTestimonial = async (id: string) => {
+    setTestimonials((prev) => prev.filter((t) => t.id !== id));
+    try {
+      await deleteDoc(doc(db, 'testimonials', id));
+    } catch (err) {
+      handleFirestoreError(err, OperationType.DELETE, `testimonials/${id}`);
+    }
   };
 
   // Certificates
@@ -300,11 +462,11 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
       ...certData,
       id: `cert-${Date.now()}`,
     };
-    setCertificates(prev => [newCert, ...prev]);
+    setCertificates((prev) => [newCert, ...prev]);
   };
 
   const deleteCertificate = (id: string) => {
-    setCertificates(prev => prev.filter(c => c.id !== id));
+    setCertificates((prev) => prev.filter((c) => c.id !== id));
   };
 
   // Admin auth
@@ -317,7 +479,27 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return false;
   };
 
-  const adminLogout = () => {
+  const googleLogin = async (): Promise<boolean> => {
+    try {
+      const result = await signInWithPopup(auth, googleProvider);
+      if (result.user) {
+        setIsAdminAuthenticated(true);
+        sessionStorage.setItem('anoarul_admin_session', 'true');
+        return true;
+      }
+      return false;
+    } catch (error) {
+      console.warn('Google sign-in popup error:', error);
+      return false;
+    }
+  };
+
+  const adminLogout = async () => {
+    try {
+      await signOut(auth);
+    } catch (e) {
+      // ignore
+    }
     setIsAdminAuthenticated(false);
     sessionStorage.removeItem('anoarul_admin_session');
   };
@@ -340,7 +522,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     setContactInfo(initialContactInfo);
     setClinicHours(initialClinicHours);
-    setProfilePhoto('/src/assets/images/doctor_portrait_1792911353969.jpg');
+    setProfilePhoto('/src/assets/images/dr_anoarul_dma.png');
     setCustomCvUrl(null);
     setBlogPosts(initialBlogPosts);
     setTestimonials(initialTestimonials);
@@ -377,8 +559,11 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
         deleteCertificate,
         isAdminAuthenticated,
         adminLogin,
+        googleLogin,
         adminLogout,
         changeAdminPassword,
+        firebaseUser,
+        isFirebaseConnected,
         resetAllToDefault,
       }}
     >

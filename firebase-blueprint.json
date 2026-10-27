@@ -1,0 +1,73 @@
+{
+  "entities": {
+    "Appointment": {
+      "title": "Appointment",
+      "description": "Patient consultation request submitted from website",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 64 },
+        "name": { "type": "string", "maxLength": 100 },
+        "phone": { "type": "string", "maxLength": 25 },
+        "age": { "type": "string", "maxLength": 10 },
+        "gender": { "type": "string", "enum": ["male", "female", "other"] },
+        "problem": { "type": "string", "maxLength": 1000 },
+        "date": { "type": "string", "maxLength": 25 },
+        "timeSlot": { "type": "string", "maxLength": 80 },
+        "status": { "type": "string", "enum": ["pending", "confirmed", "done", "cancelled"] },
+        "createdAt": { "type": "string", "maxLength": 50 }
+      },
+      "required": ["name", "phone", "age", "gender", "problem", "date", "status", "createdAt"]
+    },
+    "Testimonial": {
+      "title": "Testimonial",
+      "description": "Patient feedback and clinic reviews",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 64 },
+        "patientName": { "type": "string", "maxLength": 100 },
+        "village": { "type": "string", "maxLength": 100 },
+        "commentEn": { "type": "string", "maxLength": 1000 },
+        "commentBn": { "type": "string", "maxLength": 1000 },
+        "service": { "type": "string", "maxLength": 100 },
+        "rating": { "type": "number" },
+        "date": { "type": "string", "maxLength": 25 },
+        "status": { "type": "string", "enum": ["approved", "pending"] }
+      },
+      "required": ["patientName", "commentBn", "service", "status"]
+    },
+    "BlogPost": {
+      "title": "BlogPost",
+      "description": "Health awareness and preventive care articles",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 64 },
+        "titleEn": { "type": "string", "maxLength": 250 },
+        "titleBn": { "type": "string", "maxLength": 250 },
+        "categoryEn": { "type": "string", "maxLength": 100 },
+        "categoryBn": { "type": "string", "maxLength": 100 },
+        "summaryEn": { "type": "string", "maxLength": 500 },
+        "summaryBn": { "type": "string", "maxLength": 500 },
+        "contentEn": { "type": "string", "maxLength": 10000 },
+        "contentBn": { "type": "string", "maxLength": 10000 },
+        "author": { "type": "string", "maxLength": 100 },
+        "date": { "type": "string", "maxLength": 25 },
+        "readTime": { "type": "string", "maxLength": 50 }
+      },
+      "required": ["titleEn", "titleBn", "summaryBn", "contentBn"]
+    }
+  },
+  "firestore": {
+    "/appointments/{appointmentId}": {
+      "schema": "Appointment",
+      "description": "Clinic appointments submitted by patients and reviewed by practitioner"
+    },
+    "/testimonials/{testimonialId}": {
+      "schema": "Testimonial",
+      "description": "Patient clinic testimonials with moderation status"
+    },
+    "/blogPosts/{postId}": {
+      "schema": "BlogPost",
+      "description": "Health tips and seasonal medical guides"
+    }
+  }
+}

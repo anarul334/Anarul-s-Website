@@ -135,40 +135,50 @@ export const ContactSection: React.FC = () => {
 
           </div>
 
-          {/* Right Column: Interactive Map Embed of Satkhira Sadar */}
+          {/* Right Column: Interactive Map of Satkhira Sadar / Chhoygharia Bazar */}
           <div className="lg:col-span-7 flex flex-col">
-            <div className="h-full min-h-[380px] lg:min-h-[460px] rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800 shadow-sm relative bg-slate-100 dark:bg-slate-800">
-              {/* Google Maps iframe focused on Satkhira Sadar / Chhoygharia */}
+            <div className="h-full min-h-[380px] lg:min-h-[460px] rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800 shadow-sm relative bg-slate-100 dark:bg-slate-800 flex flex-col">
+              
+              {/* Fast loading, reliable OpenStreetMap embed */}
               <iframe
                 title="Satkhira Sadar Chhoygharia Location Map"
-                src="https://maps.google.com/maps?q=Chhoygharia%20Bazar%20Satkhira%20Sadar%20Bangladesh&t=&z=14&ie=UTF8&iwloc=&output=embed"
+                src="https://www.openstreetmap.org/export/embed.html?bbox=89.0100%2C22.7150%2C89.0600%2C22.7550&amp;layer=mapnik&amp;marker=22.7350%2C89.0350"
                 width="100%"
                 height="100%"
                 style={{ border: 0 }}
-                allowFullScreen={false}
                 loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-                className="w-full h-full min-h-[380px] lg:min-h-[460px]"
+                referrerPolicy="no-referrer"
+                className="w-full flex-1 min-h-[340px] lg:min-h-[420px]"
               ></iframe>
 
-              {/* Map floating banner */}
-              <div className="absolute bottom-4 left-4 right-4 sm:right-auto sm:max-w-xs bg-white/95 dark:bg-[#0B132B]/95 backdrop-blur-md p-3.5 rounded-xl border border-slate-200 dark:border-slate-700 shadow-md text-xs space-y-1">
-                <div className="font-bold text-[#1F3A5F] dark:text-teal-400 flex items-center gap-1">
-                  <Navigation className="w-3.5 h-3.5 text-teal-600" />
-                  <span>{language === 'bn' ? 'রিফাত ফার্মেসী ও চেম্বার' : 'Rifat Pharmacy & Chamber'}</span>
+              {/* Map floating banner with direct navigation links */}
+              <div className="absolute bottom-4 left-4 right-4 sm:right-auto sm:max-w-sm bg-white/95 dark:bg-[#0B132B]/95 backdrop-blur-md p-4 rounded-xl border border-slate-200 dark:border-slate-700 shadow-md text-xs space-y-1.5">
+                <div className="font-bold text-[#1F3A5F] dark:text-teal-400 flex items-center gap-1.5">
+                  <Navigation className="w-4 h-4 text-teal-600 dark:text-teal-400 shrink-0" />
+                  <span className="text-sm font-bold">{language === 'bn' ? 'রিফাত ফার্মেসী ও চেম্বার' : 'Rifat Pharmacy & Chamber'}</span>
                 </div>
-                <p className="text-slate-600 dark:text-slate-300">
-                  {language === 'bn' ? 'ছয়ঘরিয়া বাজার, বৈকারী রোড, সাতক্ষীরা সদর' : 'Chhoygharia Bazar, Baikari Road, Satkhira Sadar'}
+                <p className="text-slate-600 dark:text-slate-300 text-xs leading-relaxed">
+                  {language === 'bn' ? 'ছয়ঘরিয়া বাজার, বৈকারী রোড, সাতক্ষীরা সদর, সাতক্ষীরা-৯৪০০' : 'Chhoygharia Bazar, Baikari Road, Satkhira Sadar, Satkhira-9400'}
                 </p>
-                <a
-                  href="https://maps.google.com/?q=Satkhira+Sadar+Bangladesh"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1 text-[11px] font-bold text-teal-700 dark:text-teal-400 hover:underline pt-0.5"
-                >
-                  <span>{t('openInGoogleMaps')}</span>
-                  <ExternalLink className="w-3 h-3" />
-                </a>
+                <div className="pt-1 flex items-center gap-3">
+                  <a
+                    href="https://www.google.com/maps/search/?api=1&query=Chhoygharia+Bazar+Satkhira+Bangladesh"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1 text-xs font-bold text-teal-700 dark:text-teal-400 hover:underline"
+                  >
+                    <span>{t('openInGoogleMaps')}</span>
+                    <ExternalLink className="w-3.5 h-3.5" />
+                  </a>
+                  <span className="text-slate-300 dark:text-slate-600">•</span>
+                  <a
+                    href={`tel:${contactInfo.phone}`}
+                    className="inline-flex items-center gap-1 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:text-teal-600"
+                  >
+                    <Phone className="w-3 h-3 text-teal-600" />
+                    <span>{contactInfo.displayPhone}</span>
+                  </a>
+                </div>
               </div>
             </div>
           </div>

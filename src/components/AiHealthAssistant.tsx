@@ -42,7 +42,8 @@ export const AiHealthAssistant: React.FC<AiHealthAssistantProps> = ({ isModal = 
 
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
-  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const messagesContainerRef = useRef<HTMLDivElement>(null);
+  const isFirstMount = useRef(true);
 
   const quickQuestions = language === 'bn'
     ? [
@@ -58,12 +59,15 @@ export const AiHealthAssistant: React.FC<AiHealthAssistantProps> = ({ isModal = 
         'What should I do immediately for a deep farm cut?',
       ];
 
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
-
+  // Only scroll inner chat container when a message is sent or received, NEVER scroll the browser window
   useEffect(() => {
-    scrollToBottom();
+    if (isFirstMount.current) {
+      isFirstMount.current = false;
+      return;
+    }
+    if (messagesContainerRef.current) {
+      messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
+    }
   }, [messages, loading]);
 
   const handleSend = async (userText?: string) => {
@@ -178,7 +182,10 @@ export const AiHealthAssistant: React.FC<AiHealthAssistantProps> = ({ isModal = 
       </div>
 
       {/* Message Stream */}
-      <div className="flex-1 overflow-y-auto p-4 sm:p-5 space-y-4 max-h-[380px] sm:max-h-[440px]">
+      <div
+        ref={messagesContainerRef}
+        className="flex-1 overflow-y-auto p-4 sm:p-5 space-y-4 max-h-[380px] sm:max-h-[440px]"
+      >
         {messages.map((msg) => (
           <div
             key={msg.id}
@@ -228,8 +235,6 @@ export const AiHealthAssistant: React.FC<AiHealthAssistantProps> = ({ isModal = 
             </div>
           </div>
         )}
-
-        <div ref={messagesEndRef} />
       </div>
 
       {/* Suggested Quick Questions */}

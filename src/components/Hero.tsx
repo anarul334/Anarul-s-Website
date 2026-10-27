@@ -135,15 +135,15 @@ export const Hero: React.FC<HeroProps> = ({ onOpenCv, onOpenAssistant }) => {
               <div className="relative bg-white dark:bg-[#111C35] rounded-2xl border border-slate-200 dark:border-slate-800 p-4 sm:p-5 shadow-lg">
                 
                 {/* Circular Portrait with clean clinical frame */}
-                <div className="relative aspect-square rounded-full overflow-hidden border-4 border-white dark:border-slate-800 shadow-md max-w-[260px] sm:max-w-[280px] mx-auto bg-slate-100 dark:bg-slate-800">
+                <div className="relative aspect-square rounded-full overflow-hidden border-4 border-white dark:border-slate-800 shadow-md max-w-[260px] sm:max-w-[280px] mx-auto bg-gradient-to-b from-teal-50 via-slate-100 to-teal-100/50 dark:from-slate-800 dark:to-slate-900 flex items-end justify-center">
                   <img
                     src={profilePhoto}
-                    alt="Md. Anoarul Islam, Rural Medical Practitioner in Satkhira"
+                    alt="Md. Anoarul Islam, Diploma in Medical Assistant (DMA) in Satkhira"
                     referrerPolicy="no-referrer"
                     className="w-full h-full object-cover object-top hover:scale-105 transition-transform duration-500"
                     onError={(e) => {
                       // Fallback if image path fails
-                      (e.currentTarget as HTMLImageElement).src = '/src/assets/images/doctor_portrait_1792911353969.jpg';
+                      (e.currentTarget as HTMLImageElement).src = '/src/assets/images/dr_anoarul_dma.png';
                     }}
                   />
                 </div>

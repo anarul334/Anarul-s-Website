@@ -1,0 +1,87 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper functions
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && (
+        request.auth.token.email == 'anaruldr4@gmail.com' ||
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid))
+      );
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() > 0 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function isValidAppointment(data) {
+      return data.name is string && data.name.size() > 0 && data.name.size() <= 100
+        && data.phone is string && data.phone.size() >= 10 && data.phone.size() <= 25
+        && data.age is string && data.age.size() <= 10
+        && data.gender in ['male', 'female', 'other']
+        && data.problem is string && data.problem.size() > 0 && data.problem.size() <= 1000
+        && data.date is string && data.date.size() <= 25
+        && data.status in ['pending', 'confirmed', 'done', 'cancelled'];
+    }
+
+    function isValidTestimonial(data) {
+      return data.patientName is string && data.patientName.size() > 0 && data.patientName.size() <= 100
+        && data.commentBn is string && data.commentBn.size() > 0 && data.commentBn.size() <= 1000
+        && data.service is string && data.service.size() <= 100
+        && data.status in ['pending', 'approved'];
+    }
+
+    function isValidBlogPost(data) {
+      return data.titleEn is string && data.titleEn.size() <= 250
+        && data.titleBn is string && data.titleBn.size() <= 250
+        && data.contentBn is string && data.contentBn.size() <= 10000;
+    }
+
+    // Default deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Connection testing
+    match /test/{testId} {
+      allow read: if true;
+    }
+
+    // Admins list
+    match /admins/{userId} {
+      allow read: if isSignedIn();
+      allow write: if isAdmin();
+    }
+
+    // Appointments (Patients can submit pending appointments; only doctor/admin can list, view PII & manage)
+    match /appointments/{appointmentId} {
+      allow create: if isValidId(appointmentId) && isValidAppointment(request.resource.data) && request.resource.data.status == 'pending';
+      allow read: if isAdmin();
+      allow update, delete: if isAdmin();
+    }
+
+    // Testimonials (Public can view approved, anyone can submit pending review)
+    match /testimonials/{testimonialId} {
+      allow get: if resource.data.status == 'approved' || isAdmin();
+      allow list: if resource.data.status == 'approved' || isAdmin();
+      allow create: if isValidId(testimonialId) && isValidTestimonial(request.resource.data) && request.resource.data.status == 'pending';
+      allow update, delete: if isAdmin();
+    }
+
+    // Health Blog Posts (Public can view, only Admin can write)
+    match /blogPosts/{postId} {
+      allow read: if true;
+      allow write: if isAdmin() && isValidBlogPost(request.resource.data);
+    }
+
+    // General Clinic Settings (Read public, write Admin)
+    match /config/{configId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+  }
+}

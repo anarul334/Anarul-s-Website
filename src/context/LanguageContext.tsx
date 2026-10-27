@@ -43,7 +43,7 @@ const translations: Record<Language, Record<string, string>> = {
     // About
     aboutTitle: 'Compassionate Primary Health Care for Rural Families',
     aboutSubtitle: 'Providing dependable primary healthcare, child nutrition, and emergency first response right at the heart of Chhoygharia, Baikari.',
-    aboutP1: 'Md. Anoarul Islam is an experienced Rural Medical Practitioner (RMP) with over 15 continuous years of clinical dedication in Satkhira Sadar. Having begun his practice in 2009, he bridges the essential gap between village communities and secondary medical facilities.',
+    aboutP1: 'Md. Anoarul Islam is an experienced Medical Assistant (DMA) with over 15 continuous years of clinical dedication in Satkhira Sadar. Having begun his practice in 2009, he bridges the essential gap between village communities and secondary medical facilities.',
     aboutP2: 'As the proprietor and registered pharmacy technician of Rifat Pharmacy (established 2020, Reg. C-99360), he ensures authentic manufacturer medicines, proper temperature preservation, and clear dosage instructions for every patient.',
     aboutP3: 'In addition to general medicine and common disease diagnosis, he specializes in trained minor procedures, maternal-child health, family planning counselling, and rapid emergency first response with structured hospital referral.',
     aboutRegTitle: 'Official Registrations & Samity Memberships',
@@ -154,12 +154,12 @@ const translations: Record<Language, Record<string, string>> = {
 
     // CV
     cvTitle: 'Curriculum Vitae',
-    cvSubtitle: 'Md. Anoarul Islam — Rural Medical Practitioner',
+    cvSubtitle: 'Md. Anoarul Islam — Diploma in Medical Assistant (DMA)',
     btnPrintCv: 'Print / Save as PDF',
     btnCloseCv: 'Close CV',
 
     // Footer
-    footerDisclaimer: 'Disclaimer: Md. Anoarul Islam is a dedicated Rural Medical Practitioner (RMP) providing primary healthcare, minor procedures, and pharmacy counselling. In cases of critical trauma, surgical emergencies, or acute medical crises, patients are promptly stabilized and referred to Satkhira Sadar Hospital or tertiary centers.',
+    footerDisclaimer: 'Disclaimer: Md. Anoarul Islam is a dedicated Medical Assistant (DMA) providing primary healthcare, minor procedures, and pharmacy counselling. In cases of critical trauma, surgical emergencies, or acute medical crises, patients are promptly stabilized and referred to Satkhira Sadar Hospital or tertiary centers.',
     footerCopyright: '© 2026 Md. Anoarul Islam. All rights reserved. Rifat Pharmacy, Chhoygharia, Satkhira.',
     privacyNote: 'Patient confidentiality guaranteed. National identity numbers and private personal details are never published.',
   },
@@ -197,7 +197,7 @@ const translations: Record<Language, Record<string, string>> = {
     // About
     aboutTitle: 'গ্রামীণ মানুষের সুস্বাস্থ্যে আন্তরিক প্রাথমিক চিকিৎসা',
     aboutSubtitle: 'ছয়ঘরিয়া ও বৈকারী ইউনিয়নের প্রতিটি পরিবারের বিশ্বস্ত স্বাস্থ্যবন্ধু—সঠিক রোগ নির্ণয় ও জরুরি প্রাথমিক সেবা।',
-    aboutP1: 'মোঃ আনোয়ারুল ইসলাম সাতক্ষীরা সদর উপজেলার একজন অভিজ্ঞ পল্লী চিকিৎসক (RMP)। ২০০৯ সাল থেকে একটানা ১৫ বছরেরও বেশি সময় ধরে তিনি গ্রামীণ জনগোষ্ঠীকে নিঃস্বার্থভাবে প্রাথমিক চিকিৎসাসেবা দিয়ে আসছেন।',
+    aboutP1: 'মোঃ আনোয়ারুল ইসলাম সাতক্ষীরা সদর উপজেলার একজন অভিজ্ঞ পল্লী চিকিৎসক (DMA)। ২০০৯ সাল থেকে একটানা ১৫ বছরেরও বেশি সময় ধরে তিনি গ্রামীণ জনগোষ্ঠীকে নিঃস্বার্থভাবে প্রাথমিক চিকিৎসাসেবা দিয়ে আসছেন।',
     aboutP2: '২০২০ সালে প্রতিষ্ঠিত "রিফাত ফার্মেসী"-র স্বত্বাধিকারী ও বাংলাদেশ ফার্মেসী কাউন্সিল নিবন্ধিত টেকনিশিয়ান (রেজিঃ সি-৯৯৩৬০) হিসেবে তিনি সবসময় আসল ওষুধ, সঠিক তাপমাত্রায় সংরক্ষণ এবং ওষুধের সঠিক ব্যবহারের দিকনির্দেশনা নিশ্চিত করেন।',
     aboutP3: 'সাধারণ রোগের চিকিৎসার পাশাপাশি তিনি আধুনিক পদ্ধতিতে সুন্নতে খতনা, নাকের পলিপস, পাইলস পরিচর্যা, মা ও শিশুর পুষ্টি, পরিবার পরিকল্পনা এবং জটিল রোগীর ক্ষেত্রে দ্রুত সদর হাসপাতালে রেফারেল পরিচালনা করেন।',
     aboutRegTitle: 'সরকারি নিবন্ধন ও পেশাগত সদস্যপদসমূহ',
@@ -308,12 +308,12 @@ const translations: Record<Language, Record<string, string>> = {
 
     // CV
     cvTitle: 'জীবনবৃত্তান্ত (কারিকুলাম ভিটা)',
-    cvSubtitle: 'মোঃ আনোয়ারুল ইসলাম — পল্লী চিকিৎসক ও রেজিস্টার্ড ফার্মেসী টেকনিশিয়ান',
+    cvSubtitle: 'মোঃ আনোয়ারুল ইসলাম — পল্লী চিকিৎসক (DMA) ও রেজিস্টার্ড ফার্মেসী টেকনিশিয়ান',
     btnPrintCv: 'প্রিন্ট বা পিডিএফ সেভ করুন',
     btnCloseCv: 'বন্ধ করুন',
 
     // Footer
-    footerDisclaimer: 'সতর্কীকরণ: মোঃ আনোয়ারুল ইসলাম একজন প্রশিক্ষণপ্রাপ্ত পল্লী চিকিৎসক (RMP) যিনি প্রাথমিক স্বাস্থ্যসেবা, ছোটখাটো ক্ষত পরিচর্যা ও ওষুধ পরামর্শ প্রদান করেন। মারাত্মক দুর্ঘটনা, অপারেশন প্রয়োজন এমন জটিল রোগীদের দ্রুত প্রাথমিক চিকিৎসা দিয়ে সাতক্ষীরা সদর হাসপাতালে রেফার করা হয়।',
+    footerDisclaimer: 'সতর্কীকরণ: মোঃ আনোয়ারুল ইসলাম একজন প্রশিক্ষণপ্রাপ্ত পল্লী চিকিৎসক (DMA) যিনি প্রাথমিক স্বাস্থ্যসেবা, ছোটখাটো ক্ষত পরিচর্যা ও ওষুধ পরামর্শ প্রদান করেন। মারাত্মক দুর্ঘটনা, অপারেশন প্রয়োজন এমন জটিল রোগীদের দ্রুত প্রাথমিক চিকিৎসা দিয়ে সাতক্ষীরা সদর হাসপাতালে রেফার করা হয়।',
     footerCopyright: '© ২০২৬ মোঃ আনোয়ারুল ইসলাম। সর্বস্বত্ব সংরক্ষিত। রিফাত ফার্মেসী, ছয়ঘরিয়া, সাতক্ষীরা।',
     privacyNote: 'রোগীর তথ্যের শতভাগ গোপনীয়তা নিশ্চিত। কোনো জাতীয় পরিচয়পত্র (এনআইডি) বা পরিবারের স্পর্শকাতর তথ্য ওয়েবসাইটে প্রকাশ করা হয় না।',
   },

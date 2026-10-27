@@ -96,11 +96,14 @@ export const CvModal: React.FC<CvModalProps> = ({ onClose }) => {
             </div>
 
             {/* Circular photo */}
-            <div className="w-24 h-24 rounded-full overflow-hidden border-2 border-teal-600 shrink-0">
+            <div className="w-24 h-24 rounded-full overflow-hidden border-2 border-teal-600 shrink-0 bg-gradient-to-b from-teal-50 to-slate-100 flex items-end justify-center">
               <img
                 src={profilePhoto}
                 alt="Md. Anoarul Islam"
-                className="w-full h-full object-cover"
+                className="w-full h-full object-cover object-top"
+                onError={(e) => {
+                  (e.currentTarget as HTMLImageElement).src = '/src/assets/images/dr_anoarul_dma.png';
+                }}
               />
             </div>
           </div>
@@ -127,7 +130,7 @@ export const CvModal: React.FC<CvModalProps> = ({ onClose }) => {
               Professional Summary
             </h2>
             <p className="text-xs sm:text-sm text-slate-700 leading-relaxed">
-              Experienced rural medical practitioner with over 15 continuous years of frontline clinical service in Satkhira Sadar (practising since 2009). Dedicated to delivering compassionate primary healthcare, maternal and child wellness, family planning counselling, minor surgical procedures (including male circumcision, piles care, nasal polyps), and rapid emergency first response with timely coordinated referral to Satkhira Sadar Hospital. Registered Pharmacy Technician and proprietor of Rifat Pharmacy (Chhoygharia Bazar).
+              Experienced Medical Assistant (DMA) with over 15 continuous years of frontline clinical service in Satkhira Sadar (practising since 2009). Dedicated to delivering compassionate primary healthcare, maternal and child wellness, family planning counselling, minor surgical procedures (including male circumcision, piles care, nasal polyps), and rapid emergency first response with timely coordinated referral to Satkhira Sadar Hospital. Registered Pharmacy Technician and proprietor of Rifat Pharmacy (Chhoygharia Bazar).
             </p>
           </div>
 

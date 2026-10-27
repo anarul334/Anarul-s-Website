@@ -11,8 +11,8 @@ import {
 export const initialContactInfo: ContactInfo = {
   practitionerName: 'Md. Anoarul Islam',
   banglaName: 'মোঃ আনোয়ারুল ইসলাম',
-  titleEn: 'Rural Medical Practitioner (RMP) | General Medicine | Registered Pharmacy Technician',
-  titleBn: 'পল্লী চিকিৎসক (RMP) | জেনারেল মেডিসিন | নিবন্ধিত ফার্মেসী টেকনিশিয়ান',
+  titleEn: 'Diploma in Medical Assistant (DMA) | General Medicine | Registered Pharmacy Technician',
+  titleBn: 'পল্লী চিকিৎসক (DMA) | জেনারেল মেডিসিন | নিবন্ধিত ফার্মেসী টেকনিশিয়ান',
   phone: '+8801748128106',
   displayPhone: '01748-128106',
   whatsapp: '8801748128106',
@@ -556,7 +556,7 @@ export const initialCertificates: CertificateItem[] = [
     year: '2025',
     grade: 'Grade B (GPA 3.66)',
     verificationId: 'BTF-DHPM-2025-112',
-    imageUrl: '/src/assets/images/doctor_portrait_1792911353969.jpg',
+    imageUrl: '/src/assets/images/dr_anoarul_dma.png',
   },
   {
     id: 'cert-6',
@@ -607,7 +607,7 @@ export const initialBlogPosts: BlogPost[] = [
     },
     date: '2026-09-15',
     readTime: '3 min',
-    author: 'Md. Anoarul Islam (RMP)',
+    author: 'Md. Anoarul Islam (DMA)',
   },
   {
     id: 'post-2',
@@ -646,7 +646,7 @@ Never take pain medications like Ibuprofen, Aspirin, or Diclofenac without clini
     },
     date: '2026-08-20',
     readTime: '4 min',
-    author: 'Md. Anoarul Islam (RMP)',
+    author: 'Md. Anoarul Islam (DMA)',
   },
   {
     id: 'post-3',
@@ -682,7 +682,7 @@ Never take pain medications like Ibuprofen, Aspirin, or Diclofenac without clini
     },
     date: '2026-07-12',
     readTime: '3 min',
-    author: 'Md. Anoarul Islam (RMP)',
+    author: 'Md. Anoarul Islam (DMA)',
   },
   {
     id: 'post-4',
@@ -723,7 +723,7 @@ Infants & Toddlers:
     },
     date: '2026-06-05',
     readTime: '4 min',
-    author: 'Md. Anoarul Islam (RMP)',
+    author: 'Md. Anoarul Islam (DMA)',
   },
   {
     id: 'post-5',
@@ -758,7 +758,7 @@ Key Golden Rules:
     },
     date: '2026-05-18',
     readTime: '3 min',
-    author: 'Md. Anoarul Islam (RMP)',
+    author: 'Md. Anoarul Islam (DMA)',
   },
 ];
 
