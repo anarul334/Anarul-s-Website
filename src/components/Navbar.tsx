@@ -44,7 +44,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenAdmin, onOpenCv }) => {
           >
             <span>{language === 'bn' ? contactInfo.banglaName : contactInfo.practitionerName}</span>
             <span className="text-xs font-normal text-slate-500 dark:text-slate-400">
-              {language === 'bn' ? 'পল্লী চিকিৎসক (DMA) · সাতক্ষীরা' : 'Medical Assistant (DMA) · Satkhira'}
+              {language === 'bn' ? 'পল্লী চিকিৎসক (DMA) · খুলনা' : 'Medical Assistant (DMA) · Khulna'}
             </span>
           </a>
 
