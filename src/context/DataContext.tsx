@@ -201,7 +201,27 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
   // Certificates
   const [certificates, setCertificates] = useState<CertificateItem[]>(() => {
     const saved = localStorage.getItem('anoarul_certificates');
-    return saved ? JSON.parse(saved) : initialCertificates;
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          return parsed.map((item: CertificateItem) => {
+            const initial = initialCertificates.find((c) => c.id === item.id);
+            if (initial) {
+              return {
+                ...initial,
+                ...item,
+                imageUrl: initial.imageUrl,
+              };
+            }
+            return item;
+          });
+        }
+      } catch (e) {
+        console.warn('Failed to parse saved certificates:', e);
+      }
+    }
+    return initialCertificates;
   });
 
   // Clinical Services
@@ -210,7 +230,15 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          return parsed.map((item: ClinicalServiceItem) => {
+            const initial = initialClinicalServices.find((s) => s.id === item.id);
+            if (initial && (!item.imageUrl || item.imageUrl.includes('unsplash.com'))) {
+              return { ...item, imageUrl: initial.imageUrl };
+            }
+            return item;
+          });
+        }
       } catch (e) {
         console.warn('Failed to parse saved clinical services:', e);
       }

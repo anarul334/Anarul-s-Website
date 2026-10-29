@@ -190,7 +190,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onClose }) => {
       issuer: { en: newCertIssuer.trim() || 'Certified Institution', bn: newCertIssuer.trim() || 'অনুমোদিত প্রতিষ্ঠান' },
       year: newCertYear.trim() || '2026',
       grade: newCertGrade.trim() || undefined,
-      imageUrl: newCertUrl.trim() || '/images/minor_procedures_care_1792911356505.jpg',
+      imageUrl: newCertUrl.trim() || '/assets/aistudio/Untitled-2_775278c4.jpg',
       verificationId: `CERT-${Date.now().toString().slice(-4)}`,
     });
     setNewCertTitle('');

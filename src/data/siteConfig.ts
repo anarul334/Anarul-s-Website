@@ -499,7 +499,7 @@ export const initialCertificates: CertificateItem[] = [
     year: '2021',
     grade: 'Grade A',
     verificationId: 'BTF-DMA-2021-0492',
-    imageUrl: '/images/minor_procedures_care_1792911356505.jpg',
+    imageUrl: '/assets/aistudio/Untitled-2_775278c4.jpg',
   },
   {
     id: 'cert-2',
@@ -514,7 +514,7 @@ export const initialCertificates: CertificateItem[] = [
     year: '2020',
     grade: 'Government Certified',
     verificationId: 'DGHS-SAT-VD-2020',
-    imageUrl: '/images/community_health_satkhira_1792911356288.jpg',
+    imageUrl: '/assets/aistudio/Untitled-9_2764c7fe.jpg',
   },
   {
     id: 'cert-3',
@@ -529,7 +529,7 @@ export const initialCertificates: CertificateItem[] = [
     year: '2020',
     grade: 'Reg. C-99360',
     verificationId: 'PCB-REG-C99360',
-    imageUrl: '/images/rifat_pharmacy_1792911355260.jpg',
+    imageUrl: '/assets/aistudio/Untitled-6_ee5110f0.jpg',
   },
   {
     id: 'cert-4',
@@ -544,7 +544,7 @@ export const initialCertificates: CertificateItem[] = [
     year: '2026',
     grade: 'Certified Clinical Skills',
     verificationId: 'AHS-MP-2026-881',
-    imageUrl: '/images/minor_procedures_care_1792911356505.jpg',
+    imageUrl: '/assets/aistudio/Allternate_Health_Service_591bbf4f.jpeg',
   },
   {
     id: 'cert-5',
@@ -559,7 +559,7 @@ export const initialCertificates: CertificateItem[] = [
     year: '2025',
     grade: 'Grade B (GPA 3.66)',
     verificationId: 'BTF-DHPM-2025-112',
-    imageUrl: '/images/dr_anoarul_dma.png',
+    imageUrl: '/assets/aistudio/Homeo_Cftk_1a678361.jpeg',
   },
   {
     id: 'cert-6',
@@ -574,7 +574,7 @@ export const initialCertificates: CertificateItem[] = [
     year: '2010',
     grade: 'Grade B',
     verificationId: 'BTF-LMAFP-2010-018',
-    imageUrl: '/images/community_health_satkhira_1792911356288.jpg',
+    imageUrl: '/assets/aistudio/Untitled-4_aa74e7bf.jpg',
   },
 ];
 
@@ -854,7 +854,7 @@ export const initialClinicalServices: ClinicalServiceItem[] = [
       en: 'Complementary Therapy',
       bn: 'পরিপূরক থেরাপি',
     },
-    imageUrl: 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?auto=format&fit=crop&w=800&q=80',
+    imageUrl: '/assets/aistudio/images_9a5ddc51.jpg',
     title: {
       en: 'Hijama (Cupping Therapy)',
       bn: 'হিজামা (কাপিং থেরাপি)',
@@ -997,7 +997,7 @@ export const initialClinicalServices: ClinicalServiceItem[] = [
       en: 'Minor Procedure & Anorectal Care',
       bn: 'মাইনর প্রসিডিউর ও পলিপ কেয়ার',
     },
-    imageUrl: 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&w=800&q=80',
+    imageUrl: '/assets/aistudio/hemorrhoid-treatment-and-surgery-options-4vz27kt2_9b1f79cd.webp',
     title: {
       en: 'Removal of Polyps & Care of Piles',
       bn: 'পাইলস ও পলিপস পরিচর্যা ও অপসারণ',
@@ -1124,7 +1124,7 @@ export const initialClinicalServices: ClinicalServiceItem[] = [
       en: 'Minor Excision & Cyst Care',
       bn: 'মাইনর এক্সিশন ও সিস্ট কেয়ার',
     },
-    imageUrl: 'https://images.unsplash.com/photo-1584515979956-d9f6e5d09982?auto=format&fit=crop&w=800&q=80',
+    imageUrl: '/assets/aistudio/difference-between-cyst-abscess_8e091dca.webp',
     title: {
       en: 'Removal of Tumors (Superficial Lumps & Cysts)',
       bn: 'ত্বকের ছোট টিউমার ও সিস্ট অপসারণ',
@@ -1251,7 +1251,7 @@ export const initialClinicalServices: ClinicalServiceItem[] = [
       en: 'Dermatological Minor Care',
       bn: 'ত্বকের মাইনর কেয়ার',
     },
-    imageUrl: 'https://images.unsplash.com/photo-1581594693702-fbdc51b2763b?auto=format&fit=crop&w=800&q=80',
+    imageUrl: '/assets/aistudio/image-20-1_d3d80370.png',
     title: {
       en: 'Removal of Warts & Skin Tags',
       bn: 'আঁচিল ও স্কিন ট্যাগ অপসারণ',
@@ -1374,7 +1374,7 @@ export const initialClinicalServices: ClinicalServiceItem[] = [
       en: 'Clinical Evaluation & Hospital Referral',
       bn: 'শারীরিক মূল্যায়ন ও রেফারেল',
     },
-    imageUrl: 'https://images.unsplash.com/photo-1631815589968-fdb09a223b1e?auto=format&fit=crop&w=800&q=80',
+    imageUrl: '/assets/aistudio/tonsil_5ef06b30.jpg',
     title: {
       en: 'Removal of Tonsils (Clinical Care & Evaluation)',
       bn: 'টনসিল সমস্যা মূল্যায়ন ও প্রাথমিক যত্ন',
@@ -1499,7 +1499,7 @@ export const initialClinicalServices: ClinicalServiceItem[] = [
       en: 'Device-Based Minor Procedure',
       bn: 'ডিভাইস প্রযুক্তি মাইনর প্রসিডিউর',
     },
-    imageUrl: 'https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&w=800&q=80',
+    imageUrl: '/assets/aistudio/Khotna_60ede4aa.jpg',
     title: {
       en: 'Circumcision (Using a Modern Device)',
       bn: 'ডিভাইস পদ্ধতিতে সুন্নতে খতনা',
