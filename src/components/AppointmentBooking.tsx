@@ -14,13 +14,33 @@ import {
 
 export const AppointmentBooking: React.FC = () => {
   const { language, t } = useLanguage();
-  const { contactInfo, addAppointment } = useData();
+  const {
+    contactInfo,
+    addAppointment,
+    selectedServiceForBooking,
+    setSelectedServiceForBooking,
+  } = useData();
 
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [age, setAge] = useState('');
   const [gender, setGender] = useState<'male' | 'female' | 'other'>('male');
   const [problem, setProblem] = useState('');
+
+  // Auto-prefill service if selected from Clinical Services
+  React.useEffect(() => {
+    if (selectedServiceForBooking) {
+      setProblem((prev) => {
+        if (!prev || prev.trim() === '') {
+          return `${selectedServiceForBooking}`;
+        }
+        if (!prev.includes(selectedServiceForBooking)) {
+          return `${selectedServiceForBooking} — ${prev}`;
+        }
+        return prev;
+      });
+    }
+  }, [selectedServiceForBooking]);
   const [date, setDate] = useState(() => {
     // Tomorrow by default
     const tomorrow = new Date();
@@ -125,7 +145,7 @@ export const AppointmentBooking: React.FC = () => {
           
           {/* Left: Interactive Booking Form or Success Card */}
           <div className="lg:col-span-8">
-            <div className="bg-slate-50/70 dark:bg-[#111C35] rounded-2xl border border-slate-200/80 dark:border-slate-800 p-6 sm:p-8 shadow-xs">
+            <div className="bg-slate-50/70 dark:bg-[#111C35] rounded-2xl border border-slate-200/80 dark:border-slate-800 p-4 sm:p-8 shadow-xs">
               
               {confirmedId ? (
                 /* Success View */
@@ -303,9 +323,25 @@ export const AppointmentBooking: React.FC = () => {
 
                   {/* Problem Description */}
                   <div>
-                    <label className="block text-xs font-bold text-slate-700 dark:text-slate-200 mb-1.5">
-                      {t('formProblem')} *
-                    </label>
+                    <div className="flex flex-wrap items-center justify-between gap-1.5 mb-1.5">
+                      <label className="block text-xs font-bold text-slate-700 dark:text-slate-200">
+                        {t('formProblem')} *
+                      </label>
+                      {selectedServiceForBooking && (
+                        <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-teal-50 dark:bg-teal-950/70 border border-teal-200 dark:border-teal-800 text-[11px] text-teal-800 dark:text-teal-300">
+                          <span className="w-1.5 h-1.5 rounded-full bg-teal-500 animate-pulse shrink-0"></span>
+                          <span className="font-medium truncate max-w-[130px] xs:max-w-[180px] sm:max-w-[260px]">{selectedServiceForBooking}</span>
+                          <button
+                            type="button"
+                            onClick={() => setSelectedServiceForBooking(null)}
+                            className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 ml-0.5 cursor-pointer"
+                            title="Clear"
+                          >
+                            ×
+                          </button>
+                        </div>
+                      )}
+                    </div>
                     <textarea
                       rows={3}
                       value={problem}

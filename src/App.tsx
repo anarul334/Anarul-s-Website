@@ -7,6 +7,7 @@ import { Navbar } from './components/Navbar';
 import { Hero } from './components/Hero';
 import { About } from './components/About';
 import { Services } from './components/Services';
+import { ClinicalHealthcareServices } from './components/ClinicalHealthcareServices';
 import { ExperienceAndTraining } from './components/ExperienceAndTraining';
 import { CertificatesGallery } from './components/CertificatesGallery';
 import { AppointmentBooking } from './components/AppointmentBooking';
@@ -40,7 +41,7 @@ function MainApp() {
   }, []);
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#F8FAFC] dark:bg-[#0B132B] text-slate-900 dark:text-slate-100 transition-colors">
+    <div className="min-h-screen flex flex-col bg-[#F8FAFC] dark:bg-[#0B132B] text-slate-900 dark:text-slate-100 transition-colors w-full max-w-full overflow-x-hidden">
       
       {/* Navigation */}
       <Navbar
@@ -49,13 +50,14 @@ function MainApp() {
       />
 
       {/* Main Content Sections */}
-      <main className="flex-1">
+      <main className="flex-1 w-full max-w-full overflow-x-hidden">
         <Hero
           onOpenCv={() => setIsCvOpen(true)}
           onOpenAssistant={() => setIsAssistantModalOpen(true)}
         />
         <About />
         <Services />
+        <ClinicalHealthcareServices />
         <ExperienceAndTraining />
         <CertificatesGallery />
         <AppointmentBooking />

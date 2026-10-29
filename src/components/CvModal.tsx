@@ -40,13 +40,13 @@ export const CvModal: React.FC<CvModalProps> = ({ onClose }) => {
         aria-modal="true"
       >
         {/* Top Control Bar (Hidden during print) */}
-        <div className="no-print sticky top-0 z-10 bg-slate-900 text-white px-6 py-4 flex items-center justify-between border-b border-slate-800">
-          <div className="flex items-center gap-2 text-sm font-bold">
-            <FileText className="w-4 h-4 text-teal-400" />
-            <span>{t('cvTitle')}</span>
+        <div className="no-print sticky top-0 z-10 bg-slate-900 text-white px-4 sm:px-6 py-3 sm:py-4 flex flex-wrap items-center justify-between gap-2 border-b border-slate-800">
+          <div className="flex items-center gap-2 text-xs sm:text-sm font-bold min-w-0">
+            <FileText className="w-4 h-4 text-teal-400 shrink-0" />
+            <span className="truncate">{t('cvTitle')}</span>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
             {customCvUrl && (
               <a
                 href={customCvUrl}

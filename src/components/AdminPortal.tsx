@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useLanguage } from '../context/LanguageContext';
 import { useData } from '../context/DataContext';
-import { BlogPost, CertificateItem, ClinicHours, ContactInfo } from '../types';
+import { BlogPost, CertificateItem, ClinicHours, ContactInfo, ClinicalServiceItem } from '../types';
 import {
   X,
   Lock,
@@ -22,6 +22,11 @@ import {
   Upload,
   AlertCircle,
   ShieldAlert,
+  Scissors,
+  ArrowUp,
+  ArrowDown,
+  EyeOff,
+  Save,
 } from 'lucide-react';
 
 interface AdminPortalProps {
@@ -59,12 +64,22 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onClose }) => {
     certificates,
     addCertificate,
     deleteCertificate,
+    clinicalServices,
+    updateClinicalService,
+    reorderClinicalServices,
+    toggleClinicalServiceVisibility,
+    resetClinicalServices,
     resetAllToDefault,
   } = useData();
 
   const [passwordInput, setPasswordInput] = useState('');
   const [loginError, setLoginError] = useState(false);
-  const [activeTab, setActiveTab] = useState<'appointments' | 'blog' | 'testimonials' | 'hours' | 'media' | 'setup'>('appointments');
+  const [activeTab, setActiveTab] = useState<'appointments' | 'clinical-services' | 'blog' | 'testimonials' | 'hours' | 'media' | 'setup'>('appointments');
+
+  // Clinical service editing state
+  const [editingClinicalService, setEditingClinicalService] = useState<ClinicalServiceItem | null>(null);
+  const [editServiceModalOpen, setEditServiceModalOpen] = useState(false);
+  const [clinicalSaveMsg, setClinicalSaveMsg] = useState('');
 
   // Appointment filters
   const [appointmentFilter, setAppointmentFilter] = useState<'all' | 'pending' | 'confirmed' | 'done' | 'cancelled'>('all');
@@ -203,6 +218,45 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onClose }) => {
       reader.onloadend = () => {
         if (typeof reader.result === 'string') {
           updateCustomCvUrl(reader.result);
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleMoveClinicalService = (index: number, direction: 'up' | 'down') => {
+    const targetIndex = direction === 'up' ? index - 1 : index + 1;
+    if (targetIndex < 0 || targetIndex >= clinicalServices.length) return;
+    const newItems = [...clinicalServices];
+    const [moved] = newItems.splice(index, 1);
+    newItems.splice(targetIndex, 0, moved);
+    reorderClinicalServices(newItems);
+  };
+
+  const handleOpenClinicalEdit = (service: ClinicalServiceItem) => {
+    setEditingClinicalService(JSON.parse(JSON.stringify(service)));
+    setEditServiceModalOpen(true);
+  };
+
+  const handleSaveClinicalEdit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingClinicalService) return;
+    updateClinicalService(editingClinicalService);
+    setEditServiceModalOpen(false);
+    setClinicalSaveMsg(language === 'bn' ? 'ক্লিনিক্যাল সেবা সংরক্ষিত হয়েছে!' : 'Clinical service updated successfully!');
+    setTimeout(() => setClinicalSaveMsg(''), 3000);
+  };
+
+  const handleClinicalImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file && editingClinicalService) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        if (typeof reader.result === 'string') {
+          setEditingClinicalService({
+            ...editingClinicalService,
+            imageUrl: reader.result,
+          });
         }
       };
       reader.readAsDataURL(file);
@@ -363,6 +417,21 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onClose }) => {
                 <span>{t('adminTabAppointments')}</span>
                 <span className="font-mono text-[10px] px-1.5 py-0.2 rounded-full bg-teal-100 dark:bg-teal-950 text-teal-700">
                   {appointments.length}
+                </span>
+              </button>
+
+              <button
+                onClick={() => setActiveTab('clinical-services')}
+                className={`px-3 py-1.5 text-xs font-semibold rounded-lg flex items-center gap-1.5 cursor-pointer whitespace-nowrap ${
+                  activeTab === 'clinical-services'
+                    ? 'bg-white dark:bg-[#111C35] text-[#1F3A5F] dark:text-teal-400 shadow-xs'
+                    : 'text-slate-600 dark:text-slate-300 hover:text-slate-900'
+                }`}
+              >
+                <Scissors className="w-3.5 h-3.5" />
+                <span>{language === 'bn' ? 'ক্লিনিক্যাল সেবা' : 'Clinical Services'}</span>
+                <span className="font-mono text-[10px] px-1.5 py-0.2 rounded-full bg-teal-100 dark:bg-teal-950 text-teal-700">
+                  {clinicalServices.length}
                 </span>
               </button>
 
@@ -555,6 +624,158 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onClose }) => {
                       ))}
                     </div>
                   )}
+                </div>
+              )}
+
+              {/* TAB: CLINICAL SERVICES MANAGER */}
+              {activeTab === 'clinical-services' && (
+                <div className="space-y-6">
+                  {/* Header & Reset */}
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-200 dark:border-slate-800">
+                    <div>
+                      <h3 className="text-sm sm:text-base font-bold text-[#1F3A5F] dark:text-white flex items-center gap-2">
+                        <Scissors className="w-4 h-4 text-teal-600" />
+                        <span>{language === 'bn' ? 'ক্লিনিক্যাল সার্ভিসেস ও মাইনর প্রসিডিউর পরিচালনা' : 'Clinical Healthcare Services Manager'}</span>
+                      </h3>
+                      <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                        {language === 'bn'
+                          ? 'সেবার শিরোনাম, বিবরণ, পরিচর্যা ও ছবি পরিবর্তন করুন, লুকান বা ক্রম পরিবর্তন করুন।'
+                          : 'Edit titles, descriptions, post-care guidance, replace images, reorder, or hide/show services.'}
+                      </p>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (confirm(language === 'bn' ? 'আপনি কি ক্লিনিক্যাল সার্ভিসসমূহ ডিফল্ট অবস্থায় ফিরিয়ে নিতে চান?' : 'Reset clinical services back to standard medical defaults?')) {
+                          resetClinicalServices();
+                        }
+                      }}
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs text-slate-600 dark:text-slate-300 hover:text-red-600 dark:hover:text-red-400 border border-slate-300 dark:border-slate-700 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer self-start sm:self-auto"
+                    >
+                      <RotateCcw className="w-3.5 h-3.5" />
+                      <span>{language === 'bn' ? 'ডিফল্টে ফিরুন' : 'Reset to Defaults'}</span>
+                    </button>
+                  </div>
+
+                  {/* Mandatory Helper Note on Patient Photo Consent */}
+                  <div className="p-4 rounded-xl bg-amber-50 dark:bg-amber-950/30 border border-amber-300 dark:border-amber-800/60 text-amber-900 dark:text-amber-200 text-xs flex items-start gap-3 shadow-xs">
+                    <ShieldAlert className="w-5 h-5 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
+                    <div className="space-y-1">
+                      <span className="font-bold block">
+                        {language === 'bn' ? 'রোগীর ছবি ও গোপনীয়তা নীতি (বাধ্যতামূলক):' : 'Patient Privacy & Photography Consent Policy (Mandatory):'}
+                      </span>
+                      <p className="leading-relaxed">
+                        {language === 'bn'
+                          ? 'লিখিত সম্মতি ব্যতীত কোনো রোগীর ছবি বা ব্যক্তিগত পরিচয় ব্যবহার করা সম্পূর্ণ নিষিদ্ধ। স্পর্শকাতর অঙ্গ, রক্তাক্ত গভীর ক্ষত বা অভিভাবকের লিখিত অনুমতি ছাড়া শিশুর কোনো ছবি কখনো আপলোড বা প্রকাশ করবেন না।'
+                          : 'Any real patient photo must only be used with explicit written consent. Never upload or publish photographs of intimate anatomical areas, unshielded minors without signed parental permission, or traumatic open wounds.'}
+                      </p>
+                    </div>
+                  </div>
+
+                  {clinicalSaveMsg && (
+                    <div className="p-3 rounded-lg bg-teal-50 dark:bg-teal-950/60 border border-teal-300 text-teal-800 dark:text-teal-200 text-xs font-semibold flex items-center gap-2">
+                      <CheckCircle className="w-4 h-4 text-teal-600" />
+                      <span>{clinicalSaveMsg}</span>
+                    </div>
+                  )}
+
+                  {/* List of 6 Clinical Services */}
+                  <div className="space-y-3">
+                    {clinicalServices.map((service, index) => (
+                      <div
+                        key={service.id}
+                        className={`p-4 rounded-xl border transition-all flex flex-col md:flex-row md:items-center justify-between gap-4 ${
+                          service.isVisible
+                            ? 'bg-slate-50/70 dark:bg-slate-800/40 border-slate-200 dark:border-slate-800'
+                            : 'bg-slate-100/40 dark:bg-slate-900/40 border-dashed border-slate-300 dark:border-slate-800 opacity-60'
+                        }`}
+                      >
+                        <div className="flex items-start sm:items-center gap-3.5">
+                          {/* Order & Drag Indicator */}
+                          <div className="flex flex-col items-center gap-1">
+                            <button
+                              type="button"
+                              disabled={index === 0}
+                              onClick={() => handleMoveClinicalService(index, 'up')}
+                              className="p-1 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"
+                              title="Move Up"
+                            >
+                              <ArrowUp className="w-3.5 h-3.5" />
+                            </button>
+                            <span className="w-6 h-6 rounded-full bg-slate-200 dark:bg-slate-700 text-[10px] font-bold text-slate-700 dark:text-slate-200 flex items-center justify-center">
+                              {index + 1}
+                            </span>
+                            <button
+                              type="button"
+                              disabled={index === clinicalServices.length - 1}
+                              onClick={() => handleMoveClinicalService(index, 'down')}
+                              className="p-1 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"
+                              title="Move Down"
+                            >
+                              <ArrowDown className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+
+                          {/* Image Thumbnail */}
+                          <div className="w-16 h-12 sm:w-20 sm:h-14 rounded-lg overflow-hidden bg-slate-200 dark:bg-slate-700 shrink-0 border border-slate-300 dark:border-slate-700">
+                            <img
+                              src={service.imageUrl}
+                              alt={service.title.en}
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+
+                          {/* Info */}
+                          <div>
+                            <div className="flex flex-wrap items-center gap-2">
+                              <span className="text-xs sm:text-sm font-bold text-[#1F3A5F] dark:text-white">
+                                {language === 'bn' ? service.title.bn : service.title.en}
+                              </span>
+                              <span className="text-[10px] px-2 py-0.5 rounded-full bg-teal-100 dark:bg-teal-950 text-teal-800 dark:text-teal-300">
+                                {service.category.en}
+                              </span>
+                              {!service.isVisible && (
+                                <span className="text-[10px] px-2 py-0.5 rounded-full bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400 font-semibold">
+                                  {language === 'bn' ? 'লুকানো' : 'Hidden'}
+                                </span>
+                              )}
+                            </div>
+                            <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-1 mt-1">
+                              {language === 'bn' ? service.summary.bn : service.summary.en}
+                            </p>
+                          </div>
+                        </div>
+
+                        {/* Controls */}
+                        <div className="flex items-center gap-2 self-end md:self-center">
+                          <button
+                            type="button"
+                            onClick={() => toggleClinicalServiceVisibility(service.id)}
+                            className={`p-2 rounded-lg border text-xs font-medium cursor-pointer transition-colors flex items-center gap-1.5 ${
+                              service.isVisible
+                                ? 'bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-100'
+                                : 'bg-slate-200 dark:bg-slate-800 border-transparent text-slate-500 hover:bg-slate-300'
+                            }`}
+                            title={service.isVisible ? 'Hide from website' : 'Show on website'}
+                          >
+                            {service.isVisible ? <Eye className="w-3.5 h-3.5 text-teal-600" /> : <EyeOff className="w-3.5 h-3.5" />}
+                            <span className="hidden sm:inline">{service.isVisible ? 'Visible' : 'Hidden'}</span>
+                          </button>
+
+                          <button
+                            type="button"
+                            onClick={() => handleOpenClinicalEdit(service)}
+                            className="px-3 py-1.5 rounded-lg bg-[#1F3A5F] hover:bg-[#152843] text-white text-xs font-semibold flex items-center gap-1.5 cursor-pointer"
+                          >
+                            <Edit className="w-3.5 h-3.5" />
+                            <span>{language === 'bn' ? 'সম্পাদনা করুন' : 'Edit Service'}</span>
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
                 </div>
               )}
 
@@ -1146,6 +1367,386 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onClose }) => {
                   Save Post
                 </button>
               </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* EDIT CLINICAL SERVICE MODAL */}
+      {editServiceModalOpen && editingClinicalService && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/80 backdrop-blur-xs overflow-y-auto">
+          <div className="bg-white dark:bg-[#111C35] rounded-2xl max-w-3xl w-full max-h-[92vh] flex flex-col shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden my-auto text-xs sm:text-sm">
+            
+            {/* Modal Header */}
+            <div className="p-4 sm:p-5 bg-slate-100 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between shrink-0">
+              <div className="flex items-center gap-2.5">
+                <Scissors className="w-4 h-4 text-teal-600" />
+                <h3 className="font-bold text-[#1F3A5F] dark:text-white">
+                  {language === 'bn' ? 'ক্লিনিক্যাল সেবা সম্পাদনা' : 'Edit Clinical Service'} — {editingClinicalService.title.en}
+                </h3>
+              </div>
+              <button
+                type="button"
+                onClick={() => setEditServiceModalOpen(false)}
+                className="p-1 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-500 cursor-pointer"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Scrollable Form */}
+            <form onSubmit={handleSaveClinicalEdit} className="p-5 sm:p-6 overflow-y-auto space-y-5">
+              
+              {/* Patient Photo Consent Helper */}
+              <div className="p-3.5 rounded-lg bg-amber-50 dark:bg-amber-950/40 border border-amber-300 dark:border-amber-800 text-[11px] text-amber-900 dark:text-amber-200 flex items-start gap-2">
+                <ShieldAlert className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+                <span>
+                  <strong>Ethical Notice:</strong> Any real patient photo must only be used with explicit written consent. Never show open surgical wounds, intimate areas, or children without parental permission.
+                </span>
+              </div>
+
+              {/* Title & Category EN/BN */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block font-bold mb-1">Title (English) *</label>
+                  <input
+                    type="text"
+                    required
+                    value={editingClinicalService.title.en}
+                    onChange={(e) =>
+                      setEditingClinicalService({
+                        ...editingClinicalService,
+                        title: { ...editingClinicalService.title, en: e.target.value },
+                      })
+                    }
+                    className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs"
+                  />
+                </div>
+                <div>
+                  <label className="block font-bold mb-1">Title (বাংলা) *</label>
+                  <input
+                    type="text"
+                    required
+                    value={editingClinicalService.title.bn}
+                    onChange={(e) =>
+                      setEditingClinicalService({
+                        ...editingClinicalService,
+                        title: { ...editingClinicalService.title, bn: e.target.value },
+                      })
+                    }
+                    className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block font-bold mb-1">Category (English)</label>
+                  <input
+                    type="text"
+                    value={editingClinicalService.category.en}
+                    onChange={(e) =>
+                      setEditingClinicalService({
+                        ...editingClinicalService,
+                        category: { ...editingClinicalService.category, en: e.target.value },
+                      })
+                    }
+                    className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs"
+                  />
+                </div>
+                <div>
+                  <label className="block font-bold mb-1">Category (বাংলা)</label>
+                  <input
+                    type="text"
+                    value={editingClinicalService.category.bn}
+                    onChange={(e) =>
+                      setEditingClinicalService({
+                        ...editingClinicalService,
+                        category: { ...editingClinicalService.category, bn: e.target.value },
+                      })
+                    }
+                    className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs"
+                  />
+                </div>
+              </div>
+
+              {/* Image URL & Upload */}
+              <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50 space-y-3">
+                <label className="block font-bold text-xs uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                  Service Image (Clean &amp; Hygienic Medical Visual Only)
+                </label>
+                
+                <div className="flex flex-col sm:flex-row items-center gap-4">
+                  <div className="w-24 h-16 rounded-lg overflow-hidden bg-slate-200 dark:bg-slate-700 shrink-0 border">
+                    <img
+                      src={editingClinicalService.imageUrl}
+                      alt="Preview"
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+
+                  <div className="flex-1 w-full space-y-2">
+                    <input
+                      type="text"
+                      value={editingClinicalService.imageUrl}
+                      onChange={(e) =>
+                        setEditingClinicalService({
+                          ...editingClinicalService,
+                          imageUrl: e.target.value,
+                        })
+                      }
+                      placeholder="Image URL (https://... or /images/...)"
+                      className="w-full px-3 py-2 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs font-mono"
+                    />
+
+                    <div className="flex flex-wrap items-center gap-2">
+                      <label className="inline-flex items-center gap-1.5 px-3 py-1 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-md text-xs font-medium cursor-pointer hover:bg-slate-50">
+                        <Upload className="w-3.5 h-3.5 text-teal-600" />
+                        <span>Upload Photo</span>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={handleClinicalImageUpload}
+                          className="hidden"
+                        />
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* 2-Line Summary EN/BN */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block font-bold mb-1">Card Summary (English - 2 lines)</label>
+                  <textarea
+                    rows={2}
+                    value={editingClinicalService.summary.en}
+                    onChange={(e) =>
+                      setEditingClinicalService({
+                        ...editingClinicalService,
+                        summary: { ...editingClinicalService.summary, en: e.target.value },
+                      })
+                    }
+                    className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs"
+                  />
+                </div>
+                <div>
+                  <label className="block font-bold mb-1">Card Summary (বাংলা - ২ লাইন)</label>
+                  <textarea
+                    rows={2}
+                    value={editingClinicalService.summary.bn}
+                    onChange={(e) =>
+                      setEditingClinicalService({
+                        ...editingClinicalService,
+                        summary: { ...editingClinicalService.summary, bn: e.target.value },
+                      })
+                    }
+                    className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs"
+                  />
+                </div>
+              </div>
+
+              {/* Full Description EN/BN */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block font-bold mb-1">Full Detailed Description (English)</label>
+                  <textarea
+                    rows={4}
+                    value={editingClinicalService.fullDescription.en}
+                    onChange={(e) =>
+                      setEditingClinicalService({
+                        ...editingClinicalService,
+                        fullDescription: { ...editingClinicalService.fullDescription, en: e.target.value },
+                      })
+                    }
+                    className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs"
+                  />
+                </div>
+                <div>
+                  <label className="block font-bold mb-1">সম্পূর্ণ বর্ণনা (বাংলা)</label>
+                  <textarea
+                    rows={4}
+                    value={editingClinicalService.fullDescription.bn}
+                    onChange={(e) =>
+                      setEditingClinicalService({
+                        ...editingClinicalService,
+                        fullDescription: { ...editingClinicalService.fullDescription, bn: e.target.value },
+                      })
+                    }
+                    className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs"
+                  />
+                </div>
+              </div>
+
+              {/* Duration & Fee structure */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block font-bold mb-1">Estimated Duration (English)</label>
+                  <input
+                    type="text"
+                    value={editingClinicalService.estimatedDuration.en}
+                    onChange={(e) =>
+                      setEditingClinicalService({
+                        ...editingClinicalService,
+                        estimatedDuration: { ...editingClinicalService.estimatedDuration, en: e.target.value },
+                      })
+                    }
+                    className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs"
+                  />
+                </div>
+                <div>
+                  <label className="block font-bold mb-1">আনুমানিক সময়কাল (বাংলা)</label>
+                  <input
+                    type="text"
+                    value={editingClinicalService.estimatedDuration.bn}
+                    onChange={(e) =>
+                      setEditingClinicalService({
+                        ...editingClinicalService,
+                        estimatedDuration: { ...editingClinicalService.estimatedDuration, bn: e.target.value },
+                      })
+                    }
+                    className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs"
+                  />
+                </div>
+              </div>
+
+              {/* Who it is for & Contraindications (lines) */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block font-bold mb-1">Who It Is For (One item per line - English)</label>
+                  <textarea
+                    rows={3}
+                    value={editingClinicalService.whoItIsFor.en.join('\n')}
+                    onChange={(e) =>
+                      setEditingClinicalService({
+                        ...editingClinicalService,
+                        whoItIsFor: {
+                          ...editingClinicalService.whoItIsFor,
+                          en: e.target.value.split('\n').filter((l) => l.trim().length > 0),
+                        },
+                      })
+                    }
+                    className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs"
+                  />
+                </div>
+                <div>
+                  <label className="block font-bold mb-1">কাদের জন্য উপযোগী (প্রতি লাইনে ১টি - বাংলা)</label>
+                  <textarea
+                    rows={3}
+                    value={editingClinicalService.whoItIsFor.bn.join('\n')}
+                    onChange={(e) =>
+                      setEditingClinicalService({
+                        ...editingClinicalService,
+                        whoItIsFor: {
+                          ...editingClinicalService.whoItIsFor,
+                          bn: e.target.value.split('\n').filter((l) => l.trim().length > 0),
+                        },
+                      })
+                    }
+                    className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs"
+                  />
+                </div>
+              </div>
+
+              {/* After Care */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block font-bold mb-1">After-Care Guidance (One item per line - English)</label>
+                  <textarea
+                    rows={3}
+                    value={editingClinicalService.afterCare.en.join('\n')}
+                    onChange={(e) =>
+                      setEditingClinicalService({
+                        ...editingClinicalService,
+                        afterCare: {
+                          ...editingClinicalService.afterCare,
+                          en: e.target.value.split('\n').filter((l) => l.trim().length > 0),
+                        },
+                      })
+                    }
+                    className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs"
+                  />
+                </div>
+                <div>
+                  <label className="block font-bold mb-1">পরবর্তী পরিচর্যা নির্দেশিকা (প্রতি লাইনে ১টি - বাংলা)</label>
+                  <textarea
+                    rows={3}
+                    value={editingClinicalService.afterCare.bn.join('\n')}
+                    onChange={(e) =>
+                      setEditingClinicalService({
+                        ...editingClinicalService,
+                        afterCare: {
+                          ...editingClinicalService.afterCare,
+                          bn: e.target.value.split('\n').filter((l) => l.trim().length > 0),
+                        },
+                      })
+                    }
+                    className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs"
+                  />
+                </div>
+              </div>
+
+              {/* When to see hospital / warning signs */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block font-bold mb-1 text-red-600 dark:text-red-400">
+                    When to See Hospital / Warning Signs (English)
+                  </label>
+                  <textarea
+                    rows={3}
+                    value={editingClinicalService.whenToSeeHospital.en.join('\n')}
+                    onChange={(e) =>
+                      setEditingClinicalService({
+                        ...editingClinicalService,
+                        whenToSeeHospital: {
+                          ...editingClinicalService.whenToSeeHospital,
+                          en: e.target.value.split('\n').filter((l) => l.trim().length > 0),
+                        },
+                      })
+                    }
+                    className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs"
+                  />
+                </div>
+                <div>
+                  <label className="block font-bold mb-1 text-red-600 dark:text-red-400">
+                    কখন হাসপাতালে যাবেন / সতর্কবার্তা (বাংলা)
+                  </label>
+                  <textarea
+                    rows={3}
+                    value={editingClinicalService.whenToSeeHospital.bn.join('\n')}
+                    onChange={(e) =>
+                      setEditingClinicalService({
+                        ...editingClinicalService,
+                        whenToSeeHospital: {
+                          ...editingClinicalService.whenToSeeHospital,
+                          bn: e.target.value.split('\n').filter((l) => l.trim().length > 0),
+                        },
+                      })
+                    }
+                    className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs"
+                  />
+                </div>
+              </div>
+
+              {/* Submit Buttons */}
+              <div className="flex justify-end gap-3 pt-3 border-t border-slate-200 dark:border-slate-800">
+                <button
+                  type="button"
+                  onClick={() => setEditServiceModalOpen(false)}
+                  className="px-4 py-2 rounded-lg bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 font-semibold cursor-pointer"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-6 py-2 rounded-lg bg-teal-600 hover:bg-teal-700 text-white font-semibold flex items-center gap-1.5 cursor-pointer"
+                >
+                  <Save className="w-4 h-4" />
+                  <span>Save Changes</span>
+                </button>
+              </div>
+
             </form>
           </div>
         </div>

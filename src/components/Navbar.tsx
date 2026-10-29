@@ -26,6 +26,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenAdmin, onOpenCv }) => {
 
   const navLinks = [
     { href: '#services', label: t('navServices') },
+    { href: '#clinical-services', label: t('navClinicalServices') },
     { href: '#experience', label: t('navExperience') },
     { href: '#certificates', label: t('navCertificates') },
     { href: '#blog', label: t('navBlog') },
@@ -34,16 +35,18 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenAdmin, onOpenCv }) => {
 
   return (
     <header className="sticky top-0 z-40 bg-white/95 dark:bg-[#0B132B]/95 backdrop-blur-md border-b border-slate-200/80 dark:border-slate-800 transition-colors">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between gap-8 h-20">
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between gap-2 sm:gap-4 md:gap-8 h-18 sm:h-20">
           
-          {/* Zone 1: Single text element Brand wordmark */}
+          {/* Zone 1: Brand wordmark (fluid & responsive) */}
           <a
             href="#"
-            className="flex flex-col justify-center text-lg md:text-xl font-bold tracking-tight text-[#1F3A5F] dark:text-teal-400 whitespace-nowrap shrink-0 transition-opacity hover:opacity-90"
+            className="flex flex-col justify-center min-w-0 shrink transition-opacity hover:opacity-90 py-1"
           >
-            <span>{language === 'bn' ? contactInfo.banglaName : contactInfo.practitionerName}</span>
-            <span className="text-xs font-normal text-slate-500 dark:text-slate-400">
+            <span className="text-sm sm:text-lg md:text-xl font-bold tracking-tight text-[#1F3A5F] dark:text-teal-400 truncate">
+              {language === 'bn' ? contactInfo.banglaName : contactInfo.practitionerName}
+            </span>
+            <span className="text-[10px] sm:text-xs font-normal text-slate-500 dark:text-slate-400 truncate">
               {language === 'bn' ? 'পল্লী চিকিৎসক (DMA) · খুলনা' : 'Medical Assistant (DMA) · Khulna'}
             </span>
           </a>
@@ -68,15 +71,15 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenAdmin, onOpenCv }) => {
           </nav>
 
           {/* Zone 3: 1 primary action + unobtrusive controls */}
-          <div className="flex items-center gap-3 shrink-0">
+          <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
             {/* Language Switch */}
             <button
               onClick={toggleLanguage}
               aria-label="Toggle language between Bangla and English"
-              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition-colors cursor-pointer border border-slate-200/60 dark:border-slate-700 whitespace-nowrap shrink-0"
-              title={language === 'bn' ? 'Switch to English' : 'বাংলায় পরিবর্তন করুন'}
+              className="flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-1.5 text-xs font-semibold rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition-colors cursor-pointer border border-slate-200/60 dark:border-slate-700 whitespace-nowrap shrink-0"
+              title={language === 'bn' ? 'Switch to English' : 'বাংলায় পরিবর্তন করুন'}
             >
-              <Languages className="w-3.5 h-3.5 text-teal-600 dark:text-teal-400" />
+              <Languages className="w-3.5 h-3.5 text-teal-600 dark:text-teal-400 shrink-0" />
               <span>{language === 'bn' ? 'English' : 'বাংলা'}</span>
             </button>
 
@@ -84,7 +87,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenAdmin, onOpenCv }) => {
             <button
               onClick={toggleTheme}
               aria-label="Toggle Dark/Light Mode"
-              className="p-2 rounded-lg text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 transition-colors cursor-pointer border border-slate-200/60 dark:border-slate-700 shrink-0"
+              className="p-1.5 sm:p-2 rounded-lg text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 transition-colors cursor-pointer border border-slate-200/60 dark:border-slate-700 shrink-0"
             >
               {theme === 'dark' ? (
                 <Sun className="w-4 h-4 text-amber-400" />
@@ -98,7 +101,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenAdmin, onOpenCv }) => {
               onClick={onOpenAdmin}
               aria-label="Clinic Admin Portal"
               title="Admin Portal"
-              className={`p-2 rounded-lg transition-colors cursor-pointer border border-slate-200/60 dark:border-slate-700 shrink-0 ${
+              className={`p-1.5 sm:p-2 rounded-lg transition-colors cursor-pointer border border-slate-200/60 dark:border-slate-700 shrink-0 ${
                 isAdminAuthenticated
                   ? 'bg-teal-50 dark:bg-teal-950/40 text-teal-700 dark:text-teal-300'
                   : 'bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300'
@@ -110,19 +113,19 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenAdmin, onOpenCv }) => {
             {/* Primary Action Button */}
             <a
               href="#appointment"
-              className="hidden sm:inline-flex items-center gap-2 px-4 py-2.5 text-xs md:text-sm font-semibold text-white bg-[#1F3A5F] hover:bg-[#162A45] dark:bg-teal-600 dark:hover:bg-teal-700 rounded-lg shadow-sm hover:shadow transition-all whitespace-nowrap shrink-0"
+              className="hidden sm:inline-flex items-center gap-2 px-3.5 sm:px-4 py-2 sm:py-2.5 text-xs md:text-sm font-semibold text-white bg-[#1F3A5F] hover:bg-[#162A45] dark:bg-teal-600 dark:hover:bg-teal-700 rounded-lg shadow-sm hover:shadow transition-all whitespace-nowrap shrink-0"
             >
-              <Calendar className="w-4 h-4" />
+              <Calendar className="w-4 h-4 shrink-0" />
               <span>{t('btnBookAppointment')}</span>
             </a>
 
             {/* Mobile menu hamburger */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="lg:hidden p-2 rounded-lg text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer"
+              className="lg:hidden p-1.5 sm:p-2 rounded-lg text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer"
               aria-label="Open navigation menu"
             >
-              {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              {mobileMenuOpen ? <X className="w-5 h-5 sm:w-6 sm:h-6" /> : <Menu className="w-5 h-5 sm:w-6 sm:h-6" />}
             </button>
           </div>
         </div>

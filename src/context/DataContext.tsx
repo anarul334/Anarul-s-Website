@@ -6,6 +6,7 @@ import {
   ClinicHours,
   ContactInfo,
   CertificateItem,
+  ClinicalServiceItem,
 } from '../types';
 import {
   initialContactInfo,
@@ -13,6 +14,7 @@ import {
   initialCertificates,
   initialBlogPosts,
   initialTestimonials,
+  initialClinicalServices,
 } from '../data/siteConfig';
 import {
   db,
@@ -71,6 +73,15 @@ interface DataContextType {
   certificates: CertificateItem[];
   addCertificate: (cert: Omit<CertificateItem, 'id'>) => void;
   deleteCertificate: (id: string) => void;
+
+  // Clinical Services
+  clinicalServices: ClinicalServiceItem[];
+  updateClinicalService: (service: ClinicalServiceItem) => void;
+  reorderClinicalServices: (services: ClinicalServiceItem[]) => void;
+  toggleClinicalServiceVisibility: (id: string) => void;
+  resetClinicalServices: () => void;
+  selectedServiceForBooking: string | null;
+  setSelectedServiceForBooking: (name: string | null) => void;
 
   // Admin auth & Firebase status
   isAdminAuthenticated: boolean;
@@ -192,6 +203,47 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const saved = localStorage.getItem('anoarul_certificates');
     return saved ? JSON.parse(saved) : initialCertificates;
   });
+
+  // Clinical Services
+  const [clinicalServices, setClinicalServices] = useState<ClinicalServiceItem[]>(() => {
+    const saved = localStorage.getItem('anoarul_clinical_services');
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      } catch (e) {
+        console.warn('Failed to parse saved clinical services:', e);
+      }
+    }
+    return initialClinicalServices;
+  });
+  const [selectedServiceForBooking, setSelectedServiceForBooking] = useState<string | null>(null);
+
+  useEffect(() => {
+    localStorage.setItem('anoarul_clinical_services', JSON.stringify(clinicalServices));
+  }, [clinicalServices]);
+
+  const updateClinicalService = (updated: ClinicalServiceItem) => {
+    setClinicalServices((prev) =>
+      prev.map((s) => (s.id === updated.id ? updated : s))
+    );
+  };
+
+  const reorderClinicalServices = (newOrder: ClinicalServiceItem[]) => {
+    const indexed = newOrder.map((s, idx) => ({ ...s, order: idx + 1 }));
+    setClinicalServices(indexed);
+  };
+
+  const toggleClinicalServiceVisibility = (id: string) => {
+    setClinicalServices((prev) =>
+      prev.map((s) => (s.id === id ? { ...s, isVisible: !s.isVisible } : s))
+    );
+  };
+
+  const resetClinicalServices = () => {
+    setClinicalServices(initialClinicalServices);
+    localStorage.removeItem('anoarul_clinical_services');
+  };
 
   // Admin Auth State
   const [adminPassword, setAdminPassword] = useState<string>(() => {
@@ -518,6 +570,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
     localStorage.removeItem('anoarul_blog');
     localStorage.removeItem('anoarul_testimonials');
     localStorage.removeItem('anoarul_certificates');
+    localStorage.removeItem('anoarul_clinical_services');
     localStorage.removeItem('anoarul_admin_pwd');
 
     setContactInfo(initialContactInfo);
@@ -527,6 +580,8 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setBlogPosts(initialBlogPosts);
     setTestimonials(initialTestimonials);
     setCertificates(initialCertificates);
+    setClinicalServices(initialClinicalServices);
+    setSelectedServiceForBooking(null);
     setAdminPassword('anoarul2026');
   };
 
@@ -557,6 +612,13 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
         certificates,
         addCertificate,
         deleteCertificate,
+        clinicalServices,
+        updateClinicalService,
+        reorderClinicalServices,
+        toggleClinicalServiceVisibility,
+        resetClinicalServices,
+        selectedServiceForBooking,
+        setSelectedServiceForBooking,
         isAdminAuthenticated,
         adminLogin,
         googleLogin,

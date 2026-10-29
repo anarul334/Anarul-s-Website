@@ -146,3 +146,101 @@ export interface ContactInfo {
   email: string;
   regNumber: string;
 }
+
+export interface ClinicalHowItWorksStep {
+  step: number;
+  title: {
+    en: string;
+    bn: string;
+  };
+  desc: {
+    en: string;
+    bn: string;
+  };
+}
+
+export interface ClinicalServiceItem {
+  id: string;
+  slug: string;
+  order: number;
+  isVisible: boolean;
+  category: {
+    en: string;
+    bn: string;
+  };
+  imageUrl: string;
+  title: {
+    en: string;
+    bn: string;
+  };
+  summary: {
+    en: string;
+    bn: string;
+  };
+  fullDescription: {
+    en: string;
+    bn: string;
+  };
+  whoItIsFor: {
+    en: string[];
+    bn: string[];
+  };
+  contraindications?: {
+    en: string[];
+    bn: string[];
+  };
+  howItWorksSteps: ClinicalHowItWorksStep[];
+  beforeProcedure: {
+    en: string[];
+    bn: string[];
+  };
+  afterCare: {
+    en: string[];
+    bn: string[];
+  };
+  whenToSeeHospital: {
+    en: string[];
+    bn: string[];
+  };
+  estimatedDuration: {
+    en: string;
+    bn: string;
+  };
+  costRange: {
+    en: string;
+    bn: string;
+  };
+  note?: {
+    en: string;
+    bn: string;
+  };
+  highlights: {
+    en: string[];
+    bn: string[];
+  };
+}
+
+export interface ClinicalSafetyStandard {
+  id: string;
+  iconName: string;
+  title: {
+    en: string;
+    bn: string;
+  };
+  desc: {
+    en: string;
+    bn: string;
+  };
+}
+
+export interface ClinicalFaqItem {
+  id: string;
+  question: {
+    en: string;
+    bn: string;
+  };
+  answer: {
+    en: string;
+    bn: string;
+  };
+}

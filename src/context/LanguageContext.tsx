@@ -13,6 +13,7 @@ const translations: Record<Language, Record<string, string>> = {
     // Navigation
     navAbout: 'About',
     navServices: 'Services',
+    navClinicalServices: 'Clinical Services',
     navExperience: 'Experience & Training',
     navCertificates: 'Certifications',
     navAppointment: 'Book Appointment',
@@ -49,9 +50,28 @@ const translations: Record<Language, Record<string, string>> = {
     aboutRegTitle: 'Official Registrations & Samity Memberships',
 
     // Services
-    servicesTitle: 'Clinical Healthcare Services',
-    servicesSubtitle: 'Comprehensive primary care, diagnostic screening, wound management, and minor procedures designed for rural community health.',
+    servicesTitle: 'Primary Health Care & Family Services',
+    servicesSubtitle: 'Comprehensive primary care, diagnostic screening, wound management, and chronic illness monitoring for the rural community.',
     serviceLearnMore: 'View Details',
+
+    // Clinical Healthcare Services
+    clinicalHeading: 'Clinical Healthcare Services',
+    clinicalBadge: 'Minor Procedures & Complementary Care',
+    clinicalIntro: 'Safe, hygienic and professional minor procedures and complementary care, with proper assessment first and referral to a hospital whenever needed.',
+    clinicalSafetyTitle: 'Our Safety Standards',
+    clinicalSafetySubtitle: 'Every minor procedure and complementary therapy follows strict medical hygiene, single-use materials, and ethical safety boundaries.',
+    clinicalFlowTitle: 'How It Works (Clinical Flow)',
+    clinicalFlowSubtitle: 'Structured 4-step clinical flow from first consultation to recovery follow-up.',
+    clinicalFaqHeading: 'Frequently Asked Questions',
+    clinicalDisclaimer: 'Results vary from person to person. Every procedure follows a proper assessment. Serious or complicated cases are referred to a hospital or specialist. In an emergency, call 999 or go to the nearest hospital.',
+    btnBookThisService: 'Book Appointment for this service',
+    btnCallDirect: 'Call 01748-128106',
+    labelWhoItIsFor: 'Who It Is For',
+    labelContraindications: 'Who Should Avoid (Contraindications)',
+    labelHowItWorksSteps: 'How It Works (Step-by-Step)',
+    labelBeforeProcedure: 'Before the Procedure (Preparation)',
+    labelAfterCare: 'After-Care & Healing Guidance',
+    labelWhenToSeeHospital: 'When to See a Hospital / Specialist (Warning Signs)',
 
     // Experience & Timeline
     timelineTitle: 'Professional Experience & Training',
@@ -167,6 +187,7 @@ const translations: Record<Language, Record<string, string>> = {
     // Navigation
     navAbout: 'পরিচিতি',
     navServices: 'সেবাসমূহ',
+    navClinicalServices: 'ক্লিনিক্যাল স্বাস্থ্যসেবা',
     navExperience: 'অভিজ্ঞতা ও প্রশিক্ষণ',
     navCertificates: 'সনদপত্র',
     navAppointment: 'সিরিয়াল নিন',
@@ -203,9 +224,28 @@ const translations: Record<Language, Record<string, string>> = {
     aboutRegTitle: 'সরকারি নিবন্ধন ও পেশাগত সদস্যপদসমূহ',
 
     // Services
-    servicesTitle: 'আমাদের স্বাস্থ্যসেবাসমূহ',
+    servicesTitle: 'প্রাথমিক স্বাস্থ্যসেবা ও পারিবারিক সেবা',
     servicesSubtitle: 'গ্রামের সাধারণ মানুষের স্বাস্থ্য সুরক্ষায় আধুনিক প্রাথমিক ডায়াগনস্টিক, ক্ষত পরিচর্যা ও চিকিৎসা পরামর্শ।',
     serviceLearnMore: 'বিস্তারিত দেখুন',
+
+    // Clinical Healthcare Services
+    clinicalHeading: 'ক্লিনিক্যাল স্বাস্থ্যসেবা',
+    clinicalBadge: 'মাইনর প্রসিডিউর ও পরিপূরক চিকিৎসা',
+    clinicalIntro: 'নিরাপদ, স্বাস্থ্যসম্মত এবং পেশাদার মাইনর প্রসিডিউর ও পরিপূরক চিকিৎসা—প্রথমে সঠিক শারীরিক মূল্যায়ন এবং প্রয়োজনে হাসপাতালে রেফারেল ব্যবস্থা সহ।',
+    clinicalSafetyTitle: 'আমাদের ক্লিনিক্যাল নিরাপত্তা নীতিমালা',
+    clinicalSafetySubtitle: 'প্রতিটি মাইনর প্রসিডিউর এবং পরিপূরক থেরাপিতে শতভাগ স্বাস্থ্যবিধি, নতুন সিলপ্যাক সরঞ্জাম ও রোগীর নিরাপত্তা নিশ্চিত করা হয়।',
+    clinicalFlowTitle: 'সেবা গ্রহণের ধারাবাহিক ধাপসমূহ',
+    clinicalFlowSubtitle: 'প্রাথমিক পরামর্শ থেকে শুরু করে ফলো-আপ পর্যন্ত ৪টি সুনির্দিষ্ট ধাপ।',
+    clinicalFaqHeading: 'প্রচলিত কিছু সাধারণ প্রশ্ন ও উত্তর',
+    clinicalDisclaimer: 'ফলাফল ব্যক্তিভেদে ভিন্ন হতে পারে। প্রতিটি প্রক্রিয়া শুরুর পূর্বে পুঙ্খানুপুঙ্খ শারীরিক পরীক্ষা সম্পন্ন করা হয়। জটিল বা গুরুতর ক্ষেত্রে তাৎক্ষণিকভাবে বিশেষজ্ঞ চিকিৎসক বা হাসপাতালে রেফার করা হয়। যেকোনো জরুরি অবস্থায় ৯৯৯ নম্বরে কল করুন অথবা নিকটস্থ হাসপাতালে যোগাযোগ করুন।',
+    btnBookThisService: 'এই সেবার জন্য সিরিয়াল নিন',
+    btnCallDirect: 'সরাসরি কল করুন: ০১৭৪৮-১২৮১০৬',
+    labelWhoItIsFor: 'কাদের জন্য এই সেবা উপযোগী',
+    labelContraindications: 'কাদের জন্য পরিহার্য বা নিষেধ (সতর্কতা)',
+    labelHowItWorksSteps: 'ধাপে ধাপে কার্যপ্রণালী',
+    labelBeforeProcedure: 'প্রসিডিউরের পূর্বে প্রস্তুতি',
+    labelAfterCare: 'পরবর্তী পরিচর্যা ও আরোগ্য নির্দেশিকা',
+    labelWhenToSeeHospital: 'কখন হাসপাতালে যোগাযোগ করবেন (সতর্কবার্তা)',
 
     // Experience & Timeline
     timelineTitle: 'কাজের অভিজ্ঞতা ও চিকিৎসা প্রশিক্ষণ',

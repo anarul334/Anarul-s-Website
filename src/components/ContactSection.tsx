@@ -128,9 +128,9 @@ export const ContactSection: React.FC = () => {
               <p className="leading-relaxed">
                 {clinicHours.emergencyNotice[language]}
               </p>
-              <div className="pt-1 flex items-center gap-3 font-semibold text-amber-800 dark:text-amber-300">
+              <div className="pt-1 flex flex-wrap items-center gap-x-3 gap-y-1 font-semibold text-amber-800 dark:text-amber-300 text-xs">
                 <span>{language === 'bn' ? 'জাতীয় জরুরি হটলাইন: ৯৯৯' : 'National Emergency: 999'}</span>
-                <span>·</span>
+                <span aria-hidden="true" className="hidden sm:inline">·</span>
                 <span>{language === 'bn' ? 'সদর হাসপাতাল: ০২৪৭৭৭-৭২৮২১' : 'Sadar Hospital: 024777-72821'}</span>
               </div>
             </div>
@@ -213,9 +213,9 @@ export const ContactSection: React.FC = () => {
               )}
 
               {/* Bottom bar */}
-              <div className="p-3.5 bg-white/95 dark:bg-[#111C35]/95 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between text-xs">
+              <div className="p-3.5 bg-white/95 dark:bg-[#111C35]/95 border-t border-slate-200 dark:border-slate-800 flex flex-wrap items-center justify-between gap-2 text-xs">
                 <div className="flex items-center gap-2 text-slate-500 dark:text-slate-400">
-                  <Navigation className="w-3.5 h-3.5 text-teal-600" />
+                  <Navigation className="w-3.5 h-3.5 text-teal-600 shrink-0" />
                   <span>22.7380° N, 89.0200° E</span>
                 </div>
                 <a
